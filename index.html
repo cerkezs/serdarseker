@@ -17,9 +17,10 @@
             color: var(--text); 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             overflow-x: hidden;
+            min-height: 200vh; /* Kaydırma etkisini görmek için */
         }
 
-        /* 3D Arkaplan Sabit Katman */
+        /* 3D Arkaplan Katmanı */
         #vanta-canvas {
             position: fixed;
             top: 0;
@@ -27,13 +28,14 @@
             width: 100%;
             height: 100vh;
             z-index: -1;
+            will-change: transform; /* Performans için */
         }
 
         /* Navigasyon */
         nav { 
             position: fixed; top: 0; width: 100%; padding: 20px 10%; 
             display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(5, 7, 10, 0.5); backdrop-filter: blur(20px); 
+            background: rgba(5, 7, 10, 0.7); backdrop-filter: blur(20px); 
             z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; color: white; }
@@ -41,9 +43,8 @@
         .nav-links { display: flex; list-style: none; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
-        .hamburger { display: none; cursor: pointer; color: white; font-size: 1.5rem; background: none; border: none; }
+        .hamburger { display: none; cursor: pointer; color: white; background: none; border: none; font-size: 1.5rem; }
 
-        /* Hero Bölümü */
         header { 
             height: 100vh; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; text-align: center; 
@@ -56,7 +57,6 @@
         .btn { padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: 0.5s; display: inline-block; }
         .btn-primary { background: var(--accent); color: white; box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3); }
 
-        /* İçerik Kartları */
         section { padding: 120px 10%; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
         .card { 
@@ -66,19 +66,16 @@
             border: 1px solid rgba(255,255,255,0.05); 
             transition: 0.4s;
         }
-        .card:hover { border-color: var(--accent); transform: translateY(-10px); }
 
-        /* Footer */
         footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; }
         .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
         .footer-col ul { list-style: none; }
         .footer-col li { margin-bottom: 12px; color: var(--text-dim); font-size: 0.9rem; }
-        .footer-col a { text-decoration: none; color: var(--text-dim); transition: 0.3s; }
-        .footer-col a:hover { color: var(--accent); }
+        .footer-col a { text-decoration: none; color: var(--text-dim); }
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-        @media (max-width: 992px) { nav { padding: 15px 5%; } .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } }
+        @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } }
     </style>
 </head>
 <body>
@@ -100,22 +97,22 @@
     <header>
         <div data-aos="fade-up" data-aos-duration="1000">
             <h1>Sadece Web Sitesi Değil,<br><span class="accent-text">Dijital Ekosistemler.</span></h1>
-            <p class="slogan">Modern web teknolojileri ve dinamik 3D deneyimiyle işletmenizin dijital yüzünü geleceğe taşıyoruz.</p>
-            <a href="portfolyo.html" class="btn btn-primary">Projelerimi Gör</a>
+            <p class="slogan">Modern web teknolojileriyle 3D derinliği birleştirerek işletmenizi dijitalin zirvesine taşıyoruz.</p>
+            <a href="portfolyo.html" class="btn btn-primary">Geleceği Keşfet</a>
         </div>
     </header>
 
     <section>
         <div class="grid">
             <div class="card" data-aos="fade-up">
-                <i class="fas fa-layer-group" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
-                <h3>İnteraktif Tasarım</h3>
-                <p>Kullanıcı hareketlerine duyarlı, yaşayan arayüzlerle fark yaratın.</p>
+                <i class="fas fa-magic" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <h3>İnteraktif Akış</h3>
+                <p>Kullanıcı etkileşimine göre şekil alan dinamik arayüzler.</p>
             </div>
             <div class="card" data-aos="fade-up" data-aos-delay="200">
-                <i class="fas fa-code-branch" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
-                <h3>Modern Teknoloji</h3>
-                <p>En güncel kütüphanelerle optimize edilmiş, hızlı ve güvenli sistemler.</p>
+                <i class="fas fa-bolt" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <h3>Sıfır Gecikme</h3>
+                <p>3D grafiklere rağmen optimize edilmiş mühendislik harikası performans.</p>
             </div>
         </div>
     </section>
@@ -124,7 +121,7 @@
         <div class="footer-grid">
             <div class="footer-col">
                 <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
-                <p style="margin-top: 15px;">Mühendislik disipliniyle dijital gelecek.</p>
+                <p style="margin-top: 15px;">Dijital sistemlerin mimarı.</p>
                 <div style="margin-top: 20px; font-size: 1.5rem;">
                     <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 15px;"><i class="fab fa-linkedin"></i></a>
                     <a href="https://www.instagram.com/cerkezs/" target="_blank"><i class="fab fa-instagram"></i></a>
@@ -158,9 +155,10 @@
     
     <script>
         AOS.init();
+        gsap.registerPlugin(ScrollTrigger);
 
-        // VANTA Başlatma
-        const vantaEffect = VANTA.NET({
+        // VANTA Başlatma (Sabit Kalacak)
+        VANTA.NET({
             el: "#vanta-canvas",
             mouseControls: true,
             touchControls: true,
@@ -175,23 +173,21 @@
             spacing: 16.00
         });
 
-        // SCROLL ANIMASYONU (GSAP)
-        gsap.registerPlugin(ScrollTrigger);
-
-        gsap.to(vantaEffect, {
+        // PARALLAX EFFECT (GSAP ile Canvas'ı Hareket Ettirme)
+        // Sayfayı kaydırdıkça canvas hafifçe yukarı kalkacak ve büyüyecek
+        gsap.to("#vanta-canvas", {
             scrollTrigger: {
                 trigger: "body",
                 start: "top top",
                 end: "bottom bottom",
-                scrub: 1 // Kaydırma hızına göre senkronize et
+                scrub: 1.5 // Yumuşaklık ayarı
             },
-            // Sen aşağı indikçe ağın yoğunluğunu ve mesafesini değiştirerek derinlik veriyoruz
-            maxDistance: 28.00,
-            spacing: 12.00,
-            points: 15.00
+            y: -100, // Hafif yukarı hareket
+            scale: 1.2, // Derinlik için hafif zoom
+            opacity: 0.7 // Aşağı indikçe hafif kararma (metinler okunsun diye)
         });
 
-        // Mobil Hamburger
+        // Hamburger Menü
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
         hamburger.addEventListener('click', () => {
