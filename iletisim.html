@@ -34,10 +34,9 @@
         h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 20px; }
         .accent-text { color: var(--accent); }
 
-        /* İletişim Bölümü */
+        /* İletişim Kartları */
         section { padding: 60px 10% 100px; }
         .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto; }
-        
         .contact-card { 
             background: rgba(255, 255, 255, 0.02); 
             backdrop-filter: blur(15px);
@@ -45,21 +44,18 @@
             border: 1px solid rgba(255,255,255,0.08); 
             transition: 0.4s;
         }
-        .contact-card:hover { border-color: var(--accent); }
-        .contact-card h3 { font-size: 1.8rem; margin-bottom: 20px; }
-        
-        .contact-item { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-        .contact-item i { font-size: 1.5rem; color: var(--accent); width: 30px; text-align: center; }
-        .contact-item span { font-size: 1.1rem; color: var(--text-dim); }
+        .contact-card h3 { font-size: 1.8rem; margin-bottom: 30px; }
+        .contact-info-item { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+        .contact-info-item i { font-size: 1.5rem; color: var(--accent); width: 30px; text-align: center; }
+        .contact-info-item span { font-size: 1.1rem; color: var(--text-dim); }
 
         .btn-action { 
             display: flex; align-items: center; justify-content: center; gap: 10px;
             padding: 20px; border-radius: 20px; text-decoration: none; font-weight: 700;
-            transition: 0.3s; margin-top: 20px;
+            transition: 0.3s; margin-top: 20px; width: 100%;
         }
-        .btn-mail { background: var(--accent); color: white; }
         .btn-wp { background: #25D366; color: white; }
-        .btn-action:hover { transform: scale(1.02); filter: brightness(1.2); }
+        .btn-wp:hover { transform: scale(1.02); filter: brightness(1.1); }
 
         /* Footer */
         footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
@@ -94,32 +90,30 @@
 
     <div class="page-header">
         <h1 data-aos="fade-down">Hadi <span class="accent-text">Tanışalım</span></h1>
-        <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Fikrinizi bir mühendis titizliğiyle sistemleştirelim.</p>
+        <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Projelerinizi bir üst seviyeye taşımak için sabırsızlanıyorum.</p>
     </div>
 
     <section>
         <div class="contact-grid">
             <div class="contact-card" data-aos="fade-right">
-                <h3>Bana Ulaşın</h3>
-                <div class="contact-item">
+                <h3>İletişim Bilgileri</h3>
+                <div class="contact-info-item">
                     <i class="fas fa-envelope"></i>
                     <span>iletisim@serdarseker.com.tr</span>
                 </div>
-                <div class="contact-item">
+                <div class="contact-info-item">
                     <i class="fas fa-location-dot"></i>
                     <span>Afyonkarahisar, Türkiye</span>
                 </div>
-                <div class="contact-item">
-                    <i class="fas fa-clock"></i>
+                <div class="contact-info-item">
+                    <i class="fas fa-calendar-check"></i>
                     <span>Hafta İçi: 09:00 - 18:00</span>
                 </div>
             </div>
 
             <div class="contact-card" data-aos="fade-left">
                 <h3>Hızlı Erişim</h3>
-                <a href="mailto:iletisim@serdarseker.com.tr" class="btn-action btn-mail">
-                    <i class="fas fa-paper-plane"></i> E-posta Gönder
-                </a>
+                <p style="color: var(--text-dim); margin-bottom: 20px;">Doğrudan mesaj göndermek için WhatsApp hattını kullanabilirsiniz.</p>
                 <a href="https://wa.me/905466744528" target="_blank" class="btn-action btn-wp">
                     <i class="fab fa-whatsapp"></i> WhatsApp'tan Yaz
                 </a>
@@ -132,7 +126,7 @@
             <div class="footer-col">
                 <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
                 <p style="margin-top: 15px;">Mühendislik disipliniyle dijital gelecek.</p>
-                <div style="margin-top: 20px; font-size: 1.5rem;">
+                <div class="social-links">
                     <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 15px; color:white;"><i class="fab fa-linkedin"></i></a>
                     <a href="https://www.instagram.com/cerkezs/" target="_blank" style="color:white;"><i class="fab fa-instagram"></i></a>
                 </div>
@@ -142,16 +136,16 @@
                 <ul>
                     <li><a href="index.html">Ana Sayfa</a></li>
                     <li><a href="hakkimda.html">Hakkımda</a></li>
-                    <li><a href="hizmetler.html">Hizmetler</a></li>
                     <li><a href="portfolyo.html">Projeler</a></li>
+                    <li><a href="iletisim.html">İletişim</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Hizmetler</h4>
                 <ul>
-                    <li><a href="hizmetler.html">Kurumsal Web Siteleri</a></li>
-                    <li><a href="hizmetler.html">E-Ticaret Altyapıları</a></li>
-                    <li><a href="hizmetler.html">Landing Page Tasarımı</a></li>
+                    <li><a href="hizmetler.html">Web Tasarım</a></li>
+                    <li><a href="hizmetler.html">E-Ticaret</a></li>
+                    <li><a href="hizmetler.html">Sosyal Medya Yönetimi</a></li>
                 </ul>
             </div>
             <div class="footer-col">
