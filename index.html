@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serdar Şeker | Dijital Sistem Tasarımcısı</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap">
+    <style>
+        :root {
+            --bg: #0B0E14;
+            --card-bg: #151921;
+            --accent: #007AFF;
+            --text: #E2E8F0;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 800; }
+        .slogan { color: var(--accent); font-size: 1.5rem; max-width: 700px; margin-bottom: 30px; }
+        
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn:hover { opacity: 0.8; transform: translateY(-3px); }
+
+        section { padding: 80px 10%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid #222; }
+        .card h3 { color: var(--accent); margin-top: 0; }
+        
+        .ref-img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Serdar Şeker</h1>
+        <p class="slogan">Sadece Web Sitesi Değil, İşinizi Büyüten Dijital Sistemler Tasarlıyorum.</p>
+        <a href="#contact" class="btn">Projenizi Konuşalım</a>
+    </header>
+
+    <section id="services">
+        <h2 style="text-align: center; margin-bottom: 50px;">Neler Yapıyorum?</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Kurumsal Tanıtım</h3>
+                <p>Markanızın prestijini dijital dünyaya mühendislik titizliğiyle taşıyan profesyonel çözümler.</p>
+            </div>
+            <div class="card">
+                <h3>E-Ticaret Sistemleri</h3>
+                <p>Satış odaklı, güvenli ve kullanıcı deneyimi en üst seviyede tutulmuş alışveriş altyapıları.</p>
+            </div>
+            <div class="card">
+                <h3>Landing Page</h3>
+                <p>Hızlı, etkili ve doğrudan sonuca odaklanan tek sayfalık reklam ve tanıtım sayfaları.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" style="background: #0f1218;">
+        <h2 style="text-align: center; margin-bottom: 50px;">Referans Projeler</h2>
+        <div class="grid" style="grid-template-columns: 1fr;">
+            <div class="card" style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>İDM Mühendislik</h3>
+                    <p>Endüstriyel yedek parça ve makine tasarım süreçlerini dijitalleştiren, teknik detayların ön planda olduğu kurumsal platform.</p>
+                    <a href="https://idmmuhendislik.com" target="_blank" style="color: var(--accent);">Siteyi İncele →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" style="text-align: center;">
+        <h2>İş Birliği İçin</h2>
+        <p>İhtiyaçlarınız için profesyonel bir çözüm ortağı arıyorsanız mesaj bırakın.</p>
+        <a href="mailto:iletisim@serdarseker.com.tr" class="btn">E-posta Gönder</a>
+    </section>
+
+</body>
+</html>
