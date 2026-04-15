@@ -12,37 +12,78 @@
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         #vanta-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; will-change: transform; }
-        nav { position: fixed; top: 0; width: 100%; padding: 20px 10%; display: flex; justify-content: space-between; align-items: center; background: rgba(5, 7, 10, 0.7); backdrop-filter: blur(20px); z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; color: white; }
-        .logo span { color: var(--accent); }
+        
+        nav { 
+            position: fixed; top: 0; width: 100%; padding: 20px 10%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(5, 7, 10, 0.7); backdrop-filter: blur(20px); 
+            z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
+
+        /* LOGO GÜNCELLEMESİ (TAM BEYAZ VE HOVER) */
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            letter-spacing: -1px; 
+            text-decoration: none; 
+            color: #ffffff !important; 
+            z-index: 2101; 
+            transition: 0.4s ease; 
+        }
+        .logo span { 
+            color: var(--accent); 
+            transition: 0.4s ease;
+        }
+        .logo:hover {
+            color: var(--accent) !important; 
+        }
+        .logo:hover span {
+            color: #ffffff !important; 
+        }
+
         .nav-links { display: flex; list-style: none; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .hamburger { display: none; cursor: pointer; color: white; background: none; border: none; font-size: 1.5rem; }
+
         .page-header { padding: 150px 10% 60px; text-align: center; }
-        h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; }
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 20px; }
         .accent-text { color: var(--accent); }
+
         section { padding: 60px 10% 100px; }
         .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
-        .project-card { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border-radius: 30px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); transition: 0.4s; }
+        .project-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(15px);
+            border-radius: 30px; 
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08); 
+            transition: 0.4s;
+        }
         .project-card:hover { border-color: var(--accent); transform: translateY(-10px); }
-        .project-img { width: 100%; height: 250px; background-size: cover; background-position: center; }
+        .project-img { width: 100%; height: 250px; background-size: cover; background-position: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .project-info { padding: 30px; }
+        .project-info h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .project-info p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+
         footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
         .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
         .footer-col ul { list-style: none; }
         .footer-col li { margin-bottom: 12px; color: var(--text-dim); font-size: 0.9rem; }
-        .footer-col a { text-decoration: none; color: var(--text-dim); }
+        .footer-col a { text-decoration: none; color: var(--text-dim); transition: 0.3s; }
         .footer-col a:hover { color: var(--accent); }
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
+
         @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } footer { padding: 60px 5% 30px !important; } }
     </style>
 </head>
 <body>
+
     <div id="vanta-canvas"></div>
+
     <nav>
-        <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
+        <a href="index.html" class="logo">SERDAR<span>ŞEKER</span></a>
         <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
         <ul class="nav-links" id="nav-links">
             <li><a href="index.html">Ana Sayfa</a></li>
@@ -52,26 +93,37 @@
             <li><a href="iletisim.html">İletişim</a></li>
         </ul>
     </nav>
+
     <div class="page-header">
-        <h1 data-aos="fade-down">Neler <span class="accent-text">Ürettim?</span></h1>
-        <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Fikirden yayına, 2023'ten bugüne seçili işler.</p>
+        <h1 data-aos="fade-down">Üretilen <span class="accent-text">Değerler</span></h1>
+        <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Hayalleri koda, projeleri başarıya dönüştürüyoruz.</p>
     </div>
+
     <section>
         <div class="portfolio-grid">
             <div class="project-card" data-aos="fade-up">
                 <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800');"></div>
                 <div class="project-info">
                     <h3>İDM Mühendislik</h3>
-                    <p>Endüstriyel yedek parça ve makine tasarım süreçlerini dijitalleştiren kurumsal platform.</p>
-                    <a href="https://idmmuhendislik.com" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 700;">İncele →</a>
+                    <p>Endüstriyel yedek parça ve makine tasarım süreçlerini dijitalleştiren kurumsal platform çalışması.</p>
+                    <a href="https://idmmuhendislik.com" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 700;">Siteyi Gör →</a>
+                </div>
+            </div>
+            <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&q=80&w=800');"></div>
+                <div class="project-info">
+                    <h3>E-Ticaret Tasarımı</h3>
+                    <p>Shopify altyapısı ile geliştirilmiş, kullanıcı deneyimi odaklı modern bir mağaza konsepti.</p>
+                    <span style="color: var(--text-dim); font-size: 0.9rem; font-style: italic;">Yakında Yayında</span>
                 </div>
             </div>
         </div>
     </section>
+
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
+                <a href="index.html" class="logo">SERDAR<span>ŞEKER</span></a>
                 <p style="margin-top: 15px;">Mühendislik disipliniyle dijital gelecek.</p>
                 <div style="margin-top: 20px; font-size: 1.5rem;">
                     <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 15px; color:white;"><i class="fab fa-linkedin"></i></a>
@@ -83,7 +135,7 @@
                 <ul>
                     <li><a href="index.html">Ana Sayfa</a></li>
                     <li><a href="hakkimda.html">Hakkımda</a></li>
-                    <li><a href="portfolyo.html">Projeler</a></li>
+                    <li><a href="hizmetler.html">Hizmetler</a></li>
                     <li><a href="iletisim.html">İletişim</a></li>
                 </ul>
             </div>
@@ -106,6 +158,7 @@
         </div>
         <div class="copyright">&copy; 2023 Serdar Şeker. Tüm Hakları Saklıdır.</div>
     </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
