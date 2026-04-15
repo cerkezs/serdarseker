@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <style>
-        /* CSS AYNI KALACAK (index.html ile ortak kısımlar) */
         :root { --bg: #05070a; --card-bg: rgba(21, 25, 33, 0.7); --accent: #007AFF; --text: #f8fafc; --text-dim: #94a3b8; }
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
@@ -19,8 +18,11 @@
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .hamburger { display: none; cursor: pointer; z-index: 2101; background: none; border: none; color: white; font-size: 1.5rem; }
-        @media (max-width: 992px) { nav { padding: 15px 5%; } .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; z-index: 2100; } .nav-links.active { right: 0; } .nav-links a { font-size: 1.5rem; } }
+
         .page-header { padding: 150px 10% 60px; background: linear-gradient(180deg, #111827 0%, #05070a 100%); text-align: center; }
+        h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; }
+        .accent-text { color: var(--accent); }
+
         section { padding: 80px 10%; }
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         .service-card { background: var(--card-bg); padding: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
@@ -28,15 +30,25 @@
         .feature-list { list-style: none; margin: 20px 0; }
         .feature-list li { margin-bottom: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 10px; }
         .feature-list i { font-size: 1rem; color: var(--accent); margin-bottom: 0; }
-        footer { background: #080a0f; padding: 80px 10% 40px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 50px; text-align: left; }
-        .footer-col h4 { margin-bottom: 20px; font-size: 1.2rem; color: white; }
-        .footer-col ul { list-style: none; }
-        .footer-col ul a { text-decoration: none; color: var(--text-dim); transition: 0.3s; }
-        .footer-col ul a:hover { color: var(--accent); }
-        .social-links { display: flex; gap: 20px; margin-top: 20px; }
-        .social-links a { color: var(--text); font-size: 1.5rem; }
-        .copyright { text-align: center; color: var(--text-dim); font-size: 0.9rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        footer { background: #080a0f; padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; width: 100%; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; margin-bottom: 50px; text-align: left; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .footer-col h4 { margin-bottom: 25px; font-size: 1.2rem; color: white; font-weight: 700; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul a { text-decoration: none; color: var(--text-dim); transition: 0.3s; font-size: 0.95rem; }
+        .footer-col ul a:hover { color: var(--accent); padding-left: 5px; }
+        .social-links { display: flex; gap: 20px; margin-top: 25px; }
+        .social-links a { color: var(--text); font-size: 1.5rem; transition: 0.3s; }
+        .social-links a:hover { color: var(--accent); transform: translateY(-3px); }
+        .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); width: 100%; }
+
+        @media (max-width: 992px) { 
+            nav { padding: 15px 5%; } .hamburger { display: block; } 
+            .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; z-index: 2100; } 
+            .nav-links.active { right: 0; } .nav-links a { font-size: 1.5rem; }
+            footer { padding: 60px 5% 30px !important; }
+        }
     </style>
 </head>
 <body>
@@ -52,8 +64,8 @@
         </ul>
     </nav>
     <div class="page-header">
-        <h1 data-aos="fade-down">Neler <span class="accent-text">Yapıyorum?</span></h1>
-        <p style="color: var(--text-dim);">Platform bağımsız dijital çözümler.</p>
+        <h1 data-aos="fade-down">Neler <span class="accent-text">Sunuyorum?</span></h1>
+        <p style="color: var(--text-dim);">WordPress, Wix, Shopify ve Özel Yazılım çözümleri.</p>
     </div>
     <section>
         <div class="services-grid">
@@ -62,26 +74,26 @@
                 <h3>WordPress & Wix</h3>
                 <ul class="feature-list">
                     <li><i class="fas fa-check"></i> Kurumsal Tanıtım Siteleri</li>
-                    <li><i class="fas fa-check"></i> Blog ve Haber Portalları</li>
                     <li><i class="fas fa-check"></i> SEO Optimizasyonu</li>
+                    <li><i class="fas fa-check"></i> Blog ve İçerik Yönetimi</li>
                 </ul>
             </div>
             <div class="service-card" data-aos="fade-up" data-aos-delay="200">
                 <i class="fab fa-shopify"></i>
                 <h3>Shopify & E-Ticaret</h3>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check"></i> Mağaza Kurulumu ve Tasarımı</li>
-                    <li><i class="fas fa-check"></i> Ödeme Yöntemleri Entegrasyonu</li>
-                    <li><i class="fas fa-check"></i> Ürün Yönetim Sistemleri</li>
+                    <li><i class="fas fa-check"></i> Mağaza Kurulumu</li>
+                    <li><i class="fas fa-check"></i> Ödeme Entegrasyonları</li>
+                    <li><i class="fas fa-check"></i> Satış Odaklı Tasarımlar</li>
                 </ul>
             </div>
             <div class="service-card" data-aos="fade-up" data-aos-delay="400">
                 <i class="fas fa-code"></i>
                 <h3>Özel Sistemler</h3>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check"></i> HTML/CSS/JS Özel Tasarımlar</li>
-                    <li><i class="fas fa-check"></i> Mühendislik Odaklı Otomasyonlar</li>
-                    <li><i class="fas fa-check"></i> Landing Page (Satış Odaklı)</li>
+                    <li><i class="fas fa-check"></i> HTML/CSS/JS Özel Projeler</li>
+                    <li><i class="fas fa-check"></i> Performans Odaklı Yapılar</li>
+                    <li><i class="fas fa-check"></i> Mühendislik Çözümleri</li>
                 </ul>
             </div>
         </div>
