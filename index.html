@@ -4,96 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Serdar Şeker | Dijital Sistem Tasarımcısı</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <style>
         :root {
-            --bg: #0B0E14;
-            --card-bg: #151921;
-            --accent: #007AFF;
-            --text: #E2E8F0;
+            --bg: #05070a; --card-bg: rgba(21, 25, 33, 0.7);
+            --accent: #007AFF; --text: #f8fafc; --text-dim: #94a3b8;
         }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            line-height: 1.6;
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        
+        /* Navigasyon */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 20px 10%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5, 7, 10, 0.9); backdrop-filter: blur(15px); z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; color: white; }
+        .logo span { color: var(--accent); }
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
+        nav a:hover, nav a.active { color: var(--accent); }
+
+        /* Hero */
         header {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; padding: 0 10%;
+            background: radial-gradient(circle at 50% 50%, #111827 0%, #05070a 100%);
         }
-        h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 800; }
-        .slogan { color: var(--accent); font-size: 1.5rem; max-width: 700px; margin-bottom: 30px; }
+        h1 { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.2; margin-bottom: 20px; font-weight: 800; }
+        .accent-text { color: var(--accent); }
+        .slogan { color: var(--text-dim); font-size: 1.2rem; max-width: 750px; margin-bottom: 40px; }
         
         .btn {
-            background: var(--accent);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
+            padding: 16px 35px; border-radius: 50px; text-decoration: none;
+            font-weight: 600; transition: 0.4s; display: inline-block;
         }
-        .btn:hover { opacity: 0.8; transform: translateY(-3px); }
+        .btn-primary { background: var(--accent); color: white; border: none; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,122,255,0.4); }
 
-        section { padding: 80px 10%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid #222; }
-        .card h3 { color: var(--accent); margin-top: 0; }
+        /* Özet Bölümler */
+        section { padding: 100px 10%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        h2 { font-size: 2.5rem; margin-bottom: 40px; }
+
+        footer { text-align: center; padding: 50px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--text-dim); }
         
-        .ref-img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
+        @media (max-width: 768px) { nav ul { display: none; } }
     </style>
 </head>
 <body>
 
+    <nav>
+        <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
+        <ul>
+            <li><a href="index.html" class="active">Ana Sayfa</a></li>
+            <li><a href="hakkimda.html">Hakkımda</a></li>
+            <li><a href="hizmetler.html">Hizmetler</a></li>
+            <li><a href="portfolyo.html">Projeler</a></li>
+            <li><a href="iletisim.html">İletişim</a></li>
+        </ul>
+    </nav>
+
     <header>
-        <h1>Serdar Şeker</h1>
-        <p class="slogan">Sadece Web Sitesi Değil, İşinizi Büyüten Dijital Sistemler Tasarlıyorum.</p>
-        <a href="#contact" class="btn">Projenizi Konuşalım</a>
+        <div data-aos="zoom-out">
+            <h1>Sadece Web Sitesi Değil,<br><span class="accent-text">Dijital Sistemler</span> Tasarlıyorum.</h1>
+            <p class="slogan">Mühendislik disiplini ve modern tasarım vizyonuyla, işletmenizi geleceğe taşıyacak sürdürülebilir altyapılar inşa ediyoruz.</p>
+            <a href="portfolyo.html" class="btn btn-primary">Projelerimi İnceleyin</a>
+        </div>
     </header>
 
-    <section id="services">
-        <h2 style="text-align: center; margin-bottom: 50px;">Neler Yapıyorum?</h2>
+    <section>
+        <h2 data-aos="fade-right">Neden <span class="accent-text">Farklıyız?</span></h2>
         <div class="grid">
-            <div class="card">
-                <h3>Kurumsal Tanıtım</h3>
-                <p>Markanızın prestijini dijital dünyaya mühendislik titizliğiyle taşıyan profesyonel çözümler.</p>
+            <div class="card" data-aos="fade-up">
+                <i class="fas fa-microchip" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <h3>Mühendislik Titizliği</h3>
+                <p>Her pikselin arkasında bir mantık, her kodun arkasında performans optimizasyonu var.</p>
             </div>
-            <div class="card">
-                <h3>E-Ticaret Sistemleri</h3>
-                <p>Satış odaklı, güvenli ve kullanıcı deneyimi en üst seviyede tutulmuş alışveriş altyapıları.</p>
-            </div>
-            <div class="card">
-                <h3>Landing Page</h3>
-                <p>Hızlı, etkili ve doğrudan sonuca odaklanan tek sayfalık reklam ve tanıtım sayfaları.</p>
+            <div class="card" data-aos="fade-up" data-aos-delay="200">
+                <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <h3>Büyüme Odaklılık</h3>
+                <p>Sadece güzel görünen değil, size yeni müşteriler kazandıran sistemler kuruyoruz.</p>
             </div>
         </div>
     </section>
 
-    <section id="portfolio" style="background: #0f1218;">
-        <h2 style="text-align: center; margin-bottom: 50px;">Referans Projeler</h2>
-        <div class="grid" style="grid-template-columns: 1fr;">
-            <div class="card" style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 300px;">
-                    <h3>İDM Mühendislik</h3>
-                    <p>Endüstriyel yedek parça ve makine tasarım süreçlerini dijitalleştiren, teknik detayların ön planda olduğu kurumsal platform.</p>
-                    <a href="https://idmmuhendislik.com" target="_blank" style="color: var(--accent);">Siteyi İncele →</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <footer>
+        <p>&copy; 2026 Serdar Şeker - Mühendislik & Dijital Tasarım</p>
+    </footer>
 
-    <section id="contact" style="text-align: center;">
-        <h2>İş Birliği İçin</h2>
-        <p>İhtiyaçlarınız için profesyonel bir çözüm ortağı arıyorsanız mesaj bırakın.</p>
-        <a href="mailto:iletisim@serdarseker.com.tr" class="btn">E-posta Gönder</a>
-    </section>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>AOS.init({duration: 1000, once: true});</script>
 </body>
 </html>
