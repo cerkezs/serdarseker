@@ -11,24 +11,44 @@
         :root { --bg: #05070a; --accent: #007AFF; --text: #f8fafc; --text-dim: #94a3b8; }
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        
         #vanta-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; will-change: transform; }
-        nav { position: fixed; top: 0; width: 100%; padding: 20px 10%; display: flex; justify-content: space-between; align-items: center; background: rgba(5, 7, 10, 0.7); backdrop-filter: blur(20px); z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        nav { 
+            position: fixed; top: 0; width: 100%; padding: 20px 10%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(5, 7, 10, 0.7); backdrop-filter: blur(20px); 
+            z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; color: white; }
         .logo span { color: var(--accent); }
         .nav-links { display: flex; list-style: none; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .hamburger { display: none; cursor: pointer; color: white; background: none; border: none; font-size: 1.5rem; }
-        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 10%; }
+
+        header { 
+            height: 100vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center; 
+            padding: 0 10%;
+        }
         h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); line-height: 1.1; margin-bottom: 20px; font-weight: 800; }
         .accent-text { color: var(--accent); }
         .slogan { color: var(--text-dim); font-size: clamp(1rem, 2vw, 1.3rem); max-width: 800px; margin-bottom: 40px; }
+        
         .btn { padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: 0.5s; display: inline-block; background: var(--accent); color: white; box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3); }
-        section { padding: 120px 10%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); padding: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
 
-        /* --- NİHAİ 4 SÜTUNLU FOOTER --- */
+        section { padding: 100px 10%; position: relative; z-index: 1; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(15px);
+            padding: 50px; border-radius: 40px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            transition: 0.4s;
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-10px); background: rgba(0, 122, 255, 0.05); }
+
         footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
         .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
@@ -38,11 +58,13 @@
         .footer-col a:hover { color: var(--accent); }
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-        @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } footer { padding: 60px 5% 30px !important; } }
+        @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } }
     </style>
 </head>
 <body>
+
     <div id="vanta-canvas"></div>
+
     <nav>
         <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
         <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
@@ -54,13 +76,34 @@
             <li><a href="iletisim.html">İletişim</a></li>
         </ul>
     </nav>
+
     <header>
-        <div data-aos="fade-up" data-aos-duration="1000">
+        <div data-aos="zoom-out" data-aos-duration="1500">
             <h1>Sadece Web Sitesi Değil,<br><span class="accent-text">Dijital Ekosistemler.</span></h1>
             <p class="slogan">Modern teknolojilerle 3D derinliği birleştirerek işletmenizi zirveye taşıyoruz.</p>
             <a href="portfolyo.html" class="btn">Geleceği Keşfet</a>
         </div>
     </header>
+
+    <section id="vision">
+        <div class="grid">
+            <div class="card" data-aos="fade-right">
+                <i class="fas fa-microchip" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 25px;"></i>
+                <h3 style="font-size: 1.8rem; margin-bottom: 15px;">Güncel Teknoloji & Web</h3>
+                <p style="color: var(--text-dim); line-height: 1.8;">
+                    Dijital dünya saniyeler içinde değişiyor. Wix, WordPress ve Shopify gibi global platformlardaki en son güncellemeleri ve 3D web teknolojilerini anlık takip ederek, işletmenizi geleceğe hazırlıyoruz.
+                </p>
+            </div>
+            <div class="card" data-aos="fade-left">
+                <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 25px;"></i>
+                <h3 style="font-size: 1.8rem; margin-bottom: 15px;">Trend Odaklı Sosyal Medya</h3>
+                <p style="color: var(--text-dim); line-height: 1.8;">
+                    Algoritma trendlerini ve dijital pazarlama teknolojilerini analiz ederek, Instagram ve Facebook kurumsal hesaplarınızı birer satış ve prestij kanalına dönüştürüyoruz.
+                </p>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -99,6 +142,7 @@
         </div>
         <div class="copyright">&copy; 2023 Serdar Şeker. Tüm Hakları Saklıdır.</div>
     </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
