@@ -26,7 +26,9 @@
         .btn { padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: 0.5s; display: inline-block; background: var(--accent); color: white; box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3); }
         section { padding: 120px 10%; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); padding: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
+        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); padding: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* --- NİHAİ 4 SÜTUNLU FOOTER --- */
         footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
         .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
@@ -35,7 +37,8 @@
         .footer-col a { text-decoration: none; color: var(--text-dim); transition: 0.3s; }
         .footer-col a:hover { color: var(--accent); }
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
-        @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } }
+
+        @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } footer { padding: 60px 5% 30px !important; } }
     </style>
 </head>
 <body>
@@ -58,20 +61,6 @@
             <a href="portfolyo.html" class="btn">Geleceği Keşfet</a>
         </div>
     </header>
-    <section>
-        <div class="grid">
-            <div class="card" data-aos="fade-up">
-                <i class="fas fa-magic" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
-                <h3>İnteraktif Akış</h3>
-                <p>Kullanıcı etkileşimine göre şekil alan dinamik arayüzler.</p>
-            </div>
-            <div class="card" data-aos="fade-up" data-aos-delay="200">
-                <i class="fas fa-bolt" style="font-size: 2rem; color: var(--accent); margin-bottom: 20px;"></i>
-                <h3>Sıfır Gecikme</h3>
-                <p>3D grafiklere rağmen optimize edilmiş mühendislik harikası performans.</p>
-            </div>
-        </div>
-    </section>
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -94,9 +83,9 @@
             <div class="footer-col">
                 <h4>Hizmetler</h4>
                 <ul>
-                    <li><a href="hizmetler.html">Kurumsal Web Siteleri</a></li>
-                    <li><a href="hizmetler.html">E-Ticaret Altyapıları</a></li>
-                    <li><a href="hizmetler.html">Landing Page Tasarımı</a></li>
+                    <li><a href="hizmetler.html">Web Tasarım</a></li>
+                    <li><a href="hizmetler.html">E-Ticaret</a></li>
+                    <li><a href="hizmetler.html">Sosyal Medya Yönetimi</a></li>
                 </ul>
             </div>
             <div class="footer-col">
