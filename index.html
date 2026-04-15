@@ -20,8 +20,28 @@
             background: rgba(5, 7, 10, 0.7); backdrop-filter: blur(20px); 
             z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; color: white; }
-        .logo span { color: var(--accent); }
+
+        /* LOGO GÜNCELLEMESİ (HOVER EFEKTİ) */
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            letter-spacing: -1px; 
+            text-decoration: none; 
+            color: white; 
+            z-index: 2101; 
+            transition: 0.4s ease; 
+        }
+        .logo span { 
+            color: var(--accent); 
+            transition: 0.4s ease;
+        }
+        .logo:hover {
+            color: var(--accent); 
+        }
+        .logo:hover span {
+            color: white; 
+        }
+
         .nav-links { display: flex; list-style: none; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
@@ -66,7 +86,7 @@
     <div id="vanta-canvas"></div>
 
     <nav>
-        <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
+        <a href="index.html" class="logo">SERDAR<span>ŞEKER</span></a>
         <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
         <ul class="nav-links" id="nav-links">
             <li><a href="index.html" class="active">Ana Sayfa</a></li>
@@ -107,7 +127,7 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <a href="index.html" class="logo">SERDAR<span>SEKER</span></a>
+                <a href="index.html" class="logo">SERDAR<span>ŞEKER</span></a>
                 <p style="margin-top: 15px;">Mühendislikten dijitale uzanan köprü.</p>
                 <div style="margin-top: 20px; font-size: 1.5rem;">
                     <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 15px; color:white;"><i class="fab fa-linkedin"></i></a>
