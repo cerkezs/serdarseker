@@ -39,12 +39,11 @@
         .services-header { padding: 160px 10% 60px; text-align: center; }
         .services-header h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 20px; }
 
-        /* YAN YANA 3 KUTU İÇİN GÜNCEL GRID */
         .services-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 30px; 
-            padding: 0 10% 100px; 
+            padding: 0 10% 60px; /* Alttaki buton için paddingi azalttım */
             max-width: 1400px; 
             margin: 0 auto; 
         }
@@ -65,7 +64,12 @@
         .service-card h3 { font-size: 1.6rem; margin-bottom: 15px; color: #fff; }
         .service-card p { color: var(--text-dim); line-height: 1.7; font-size: 1rem; }
 
-        footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 80px; }
+        /* BUTON ALANI STİLLERİ */
+        .cta-container { text-align: center; padding-bottom: 100px; }
+        .btn { padding: 18px 45px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: 0.5s; display: inline-block; background: var(--accent); color: white; border: none; cursor: pointer; font-size: 1.1rem; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3); }
+
+        footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 20px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
         .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px; }
         .footer-col ul { list-style: none; }
@@ -75,7 +79,7 @@
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
         @media (max-width: 1100px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 768px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } .services-grid { grid-template-columns: 1fr; padding: 0 5% 60px; } .service-card { padding: 40px 30px; } }
+        @media (max-width: 768px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } .services-grid { grid-template-columns: 1fr; padding: 0 5% 40px; } .service-card { padding: 40px 30px; } }
     </style>
 </head>
 <body>
@@ -116,6 +120,11 @@
             <p>Markanızın dijital itibarını algoritma odaklı stratejilerle yönetiyor, etkileşim ve satış getiren içerik planları oluşturuyoruz.</p>
         </div>
     </section>
+
+    <div class="cta-container" data-aos="fade-up">
+        <p style="color: var(--text-dim); margin-bottom: 25px; font-size: 1rem;">İhtiyacınıza özel çözümler için bir adım atın.</p>
+        <a href="iletisim.html" class="btn">Detaylı Bilgi Al</a>
+    </div>
 
     <footer>
         <div class="footer-grid">
