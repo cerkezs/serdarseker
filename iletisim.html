@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İletişim | Serdar ŞEKER</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2275%22 x=%225%22 font-size=%2270%22 font-weight=%22800%22 font-family=%22Arial, sans-serif%22><tspan fill=%22white%22>S</tspan><tspan fill=%22%23007AFF%22>Ş</tspan></text></svg>">
     
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2275%22 x=%225%22 font-size=%2270%22 font-weight=%22800%22 font-family=%22Arial, sans-serif%22><tspan fill=%22white%22>S</tspan><tspan fill=%22%23007AFF%22>Ş</tspan></text></svg>">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,55 +26,72 @@
 
         .logo { 
             font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; 
-            color: #ffffff !important; transition: 0.4s ease; display: inline-block;
+            color: #ffffff !important; transition: 0.4s ease;
         }
-        .logo span { color: var(--accent); transition: 0.4s ease; }
-        .logo:hover { color: var(--accent) !important; }
-        .logo:hover span { color: #ffffff !important; }
-
-        .footer-logo { font-size: 1.8rem !important; margin-bottom: 15px; }
+        .logo span { color: var(--accent); }
 
         .nav-links { display: flex; list-style: none; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .hamburger { display: none; cursor: pointer; color: white; background: none; border: none; font-size: 1.5rem; }
 
-        .page-header { padding: 150px 10% 60px; text-align: center; }
-        h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 20px; }
+        header { padding: 180px 10% 60px; text-align: center; }
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 20px; font-weight: 800; }
         .accent-text { color: var(--accent); }
 
-        section { padding: 60px 10% 100px; }
-        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .contact-container { padding: 40px 10%; max-width: 1200px; margin: 0 auto; }
+        .contact-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 30px; 
+            margin-bottom: 50px;
+        }
+
         .contact-card { 
             background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px);
-            padding: 50px; border-radius: 40px; 
+            backdrop-filter: blur(20px); 
+            padding: 40px; 
+            border-radius: 30px; 
             border: 1px solid rgba(255,255,255,0.08); 
+            text-align: center;
             transition: 0.4s;
+            text-decoration: none;
+            color: white;
+            display: block;
         }
-        .contact-card h3 { font-size: 1.8rem; margin-bottom: 30px; }
-        .contact-info-item { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
-        .contact-info-item i { font-size: 1.5rem; color: var(--accent); width: 30px; text-align: center; }
-        .contact-info-item span { font-size: 1.1rem; color: var(--text-dim); }
-
-        .btn-action { 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 20px; border-radius: 20px; text-decoration: none; font-weight: 700;
-            transition: 0.3s; margin-top: 20px; width: 100%;
-        }
-        .btn-wp { background: #25D366; color: white; }
-        .btn-wp:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .contact-card:hover { border-color: var(--accent); transform: translateY(-10px); background: rgba(0, 122, 255, 0.05); }
+        .contact-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; }
+        .contact-card h3 { margin-bottom: 10px; font-size: 1.5rem; }
+        .contact-card p { color: var(--text-dim); }
 
         footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 80px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-        .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 50px; }
+        .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; }
         .footer-col ul { list-style: none; }
         .footer-col li { margin-bottom: 12px; }
         .footer-col a { text-decoration: none; color: var(--text-dim); transition: 0.3s; font-size: 0.9rem; }
         .footer-col a:hover { color: var(--accent); }
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-        @media (max-width: 992px) { .hamburger { display: block; } .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; } .nav-links.active { right: 0; } .contact-grid { grid-template-columns: 1fr; } .contact-card { padding: 30px; } }
+        /* MOBİL DÜZELTME - KRİTİK ALAN */
+        @media (max-width: 992px) { 
+            .hamburger { display: block; } 
+            .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: var(--bg); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; z-index: 2001; } 
+            .nav-links.active { right: 0; } 
+        }
+
+        @media (max-width: 768px) { 
+            .contact-container { padding: 20px 5%; }
+            .contact-grid { 
+                grid-template-columns: 1fr; /* Kartları alt alta al */
+                width: 100%;
+                margin: 0 auto;
+            }
+            .contact-card {
+                padding: 30px 20px;
+                width: 100%; /* Kartın ekranı tam kaplamasını sağla */
+            }
+        }
     </style>
 </head>
 <body>
@@ -93,43 +110,30 @@
         </ul>
     </nav>
 
-    <div class="page-header">
-        <h1 data-aos="fade-down">Hadi <span class="accent-text">Tanışalım</span></h1>
-        <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Projelerinizi dijitalin zirvesine taşımak için buradayım.</p>
-    </div>
+    <header>
+        <h1 data-aos="fade-down">Bana <span class="accent-text">Ulaşın</span></h1>
+        <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;" data-aos="fade-up">Dijital dönüşüm yolculuğunuzda size rehberlik etmek için buradayım. Aşağıdaki kanallardan doğrudan iletişim kurabilirsiniz.</p>
+    </header>
 
-    <section>
+    <section class="contact-container">
         <div class="contact-grid">
-            <div class="contact-card" data-aos="fade-right">
-                <h3>İletişim Bilgileri</h3>
-                <div class="contact-info-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>muh.serdarseker@gmail.com</span>
-                </div>
-                <div class="contact-info-item">
-                    <i class="fas fa-location-dot"></i>
-                    <span>Afyonkarahisar, Türkiye</span>
-                </div>
-                <div class="contact-info-item">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Hafta İçi: 09:00 - 18:00</span>
-                </div>
-            </div>
-
-            <div class="contact-card" data-aos="fade-left">
-                <h3>Hızlı Erişim</h3>
-                <p style="color: var(--text-dim); margin-bottom: 20px;">Doğrudan mesaj göndermek için WhatsApp hattını kullanabilirsiniz.</p>
-                <a href="https://wa.me/905466744528" target="_blank" class="btn-action btn-wp">
-                    <i class="fab fa-whatsapp"></i> WhatsApp'tan Yaz
-                </a>
-            </div>
+            <a href="mailto:muh.serdarseker@gmail.com" class="contact-card" data-aos="fade-right">
+                <i class="fas fa-envelope"></i>
+                <h3>E-Posta</h3>
+                <p>muh.serdarseker@gmail.com</p>
+            </a>
+            <a href="https://wa.me/905466744528" target="_blank" class="contact-card" data-aos="fade-left">
+                <i class="fab fa-whatsapp"></i>
+                <h3>WhatsApp</h3>
+                <p>0546 674 45 28</p>
+            </a>
         </div>
     </section>
 
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <a href="index.html" class="logo footer-logo">SERDAR<span>ŞEKER</span></a>
+                <a href="index.html" class="logo" style="font-size:1.8rem;">SERDAR<span>ŞEKER</span></a>
                 <p style="margin-top: 15px; font-size: 0.95rem; color: var(--text-dim); line-height: 1.6;">Mühendislikten dijitale uzanan köprü.</p>
                 <div style="margin-top: 25px; font-size: 1.5rem;">
                     <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 20px; color:white;"><i class="fab fa-linkedin"></i></a>
