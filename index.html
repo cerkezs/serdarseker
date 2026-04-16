@@ -21,60 +21,44 @@
             z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
 
-        /* LOGO GÜNCELLEMESİ (TAM BEYAZ VE HOVER) */
         .logo { 
-            font-weight: 800; 
-            font-size: 1.5rem; 
-            letter-spacing: -1px; 
-            text-decoration: none; 
-            color: #ffffff !important; 
-            z-index: 2101; 
-            transition: 0.4s ease; 
+            font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-decoration: none; 
+            color: #ffffff !important; transition: 0.4s ease; display: inline-block;
         }
-        .logo span { 
-            color: var(--accent); 
-            transition: 0.4s ease;
-        }
-        .logo:hover {
-            color: var(--accent) !important; 
-        }
-        .logo:hover span {
-            color: #ffffff !important; 
-        }
+        .logo span { color: var(--accent); transition: 0.4s ease; }
+        .logo:hover { color: var(--accent) !important; }
+        .logo:hover span { color: #ffffff !important; }
+
+        .footer-logo { font-size: 1.8rem !important; margin-bottom: 15px; }
 
         .nav-links { display: flex; list-style: none; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .hamburger { display: none; cursor: pointer; color: white; background: none; border: none; font-size: 1.5rem; }
 
-        header { 
-            height: 100vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center; 
-            padding: 0 10%;
-        }
+        header { height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 10%; }
         h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); line-height: 1.1; margin-bottom: 20px; font-weight: 800; }
         .accent-text { color: var(--accent); }
         .slogan { color: var(--text-dim); font-size: clamp(1rem, 2vw, 1.3rem); max-width: 800px; margin-bottom: 40px; }
         
-        .btn { padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: 0.5s; display: inline-block; background: var(--accent); color: white; box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3); }
+        .btn { padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: 0.5s; display: inline-block; background: var(--accent); color: white; border: none; cursor: pointer; }
 
-        section { padding: 100px 10%; position: relative; z-index: 1; }
+        section { padding: 80px 10%; position: relative; z-index: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .card { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(15px);
-            padding: 50px; border-radius: 40px; 
-            border: 1px solid rgba(255,255,255,0.08); 
-            transition: 0.4s;
-        }
+        
+        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); padding: 50px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.08); transition: 0.4s; }
         .card:hover { border-color: var(--accent); transform: translateY(-10px); background: rgba(0, 122, 255, 0.05); }
 
-        footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-        .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .analysis-box { background: linear-gradient(145deg, rgba(0,122,255,0.1), rgba(5,7,10,0.5)); border: 1px solid var(--accent); padding: 60px; border-radius: 40px; text-align: center; max-width: 900px; margin: 0 auto; }
+        .input-group { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        input { padding: 18px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; outline: none; width: 100%; max-width: 400px; }
+
+        footer { background: rgba(8, 10, 15, 0.95); padding: 80px 10% 40px !important; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 80px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px; }
         .footer-col ul { list-style: none; }
-        .footer-col li { margin-bottom: 12px; color: var(--text-dim); font-size: 0.9rem; }
-        .footer-col a { text-decoration: none; color: var(--text-dim); transition: 0.3s; }
+        .footer-col li { margin-bottom: 12px; }
+        .footer-col a { text-decoration: none; color: var(--text-dim); transition: 0.3s; font-size: 0.9rem; }
         .footer-col a:hover { color: var(--accent); }
         .copyright { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
@@ -101,7 +85,7 @@
         <div data-aos="zoom-out" data-aos-duration="1500">
             <h1>Sadece Web Sitesi Değil,<br><span class="accent-text">Dijital Ekosistemler.</span></h1>
             <p class="slogan">Modern teknolojilerle 3D derinliği birleştirerek işletmenizi zirveye taşıyoruz.</p>
-            <a href="portfolyo.html" class="btn">Geleceği Keşfet</a>
+            <a href="#analysis-form" class="btn">Ücretsiz Analiz Al</a>
         </div>
     </header>
 
@@ -109,17 +93,13 @@
         <div class="grid">
             <div class="card" data-aos="fade-right">
                 <i class="fas fa-microchip" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 25px;"></i>
-                <h3 style="font-size: 1.8rem; margin-bottom: 15px;">Güncel Teknoloji & Web</h3>
-                <p style="color: var(--text-dim); line-height: 1.8;">
-                    Dijital dünya saniyeler içinde değişiyor. Wix, WordPress ve Shopify gibi global platformlardaki en son güncellemeleri ve 3D web teknolojilerini anlık takip ederek, işletmenizi geleceğe hazırlıyoruz.
-                </p>
+                <h3>Güncel Teknoloji</h3>
+                <p style="color: var(--text-dim); line-height: 1.8;">Wix, WordPress ve Shopify altyapılarını 3D web teknolojileriyle harmanlayarak geleceğin standartlarını bugün sunuyoruz.</p>
             </div>
             <div class="card" data-aos="fade-left">
                 <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 25px;"></i>
-                <h3 style="font-size: 1.8rem; margin-bottom: 15px;">Trend Odaklı Sosyal Medya</h3>
-                <p style="color: var(--text-dim); line-height: 1.8;">
-                    Algoritma trendlerini ve dijital pazarlama teknolojilerini analiz ederek, Instagram ve Facebook kurumsal hesaplarınızı birer satış ve prestij kanalına dönüştürüyoruz.
-                </p>
+                <h3>Algoritma Odaklı</h3>
+                <p style="color: var(--text-dim); line-height: 1.8;">Sosyal medya kanallarınızı sadece görsel değil, algoritma ve veri odaklı yöneterek gerçek etkileşimi hedefliyoruz.</p>
             </div>
         </div>
     </section>
@@ -155,18 +135,29 @@
         </div>
     </section>
 
+    <section id="analysis-form">
+        <div class="analysis-box" data-aos="flip-up">
+            <h2 style="margin-bottom: 15px;">Dijital <span class="accent-text">Analiz Raporu</span></h2>
+            <p style="color: var(--text-dim);">Sitenizin URL'sini bırakın, hızdan SEO'ya kapsamlı raporu 24 saatte gönderelim.</p>
+            <form action="https://wa.me/905466744528" method="GET" target="_blank" class="input-group">
+                <input type="url" name="text" placeholder="Web Sitenizin Linkini Yapıştırın" required>
+                <button type="submit" class="btn">Analiz Talep Et</button>
+            </form>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <a href="index.html" class="logo">SERDAR<span>ŞEKER</span></a>
-                <p style="margin-top: 15px;">Mühendislikten dijitale uzanan köprü.</p>
-                <div style="margin-top: 20px; font-size: 1.5rem;">
-                    <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 15px; color:white;"><i class="fab fa-linkedin"></i></a>
+                <a href="index.html" class="logo footer-logo">SERDAR<span>ŞEKER</span></a>
+                <p style="margin-top: 15px; font-size: 0.95rem; color: var(--text-dim); line-height: 1.6;">Mühendislikten dijitale uzanan köprü.</p>
+                <div style="margin-top: 25px; font-size: 1.5rem;">
+                    <a href="https://www.linkedin.com/in/serdarseker/" target="_blank" style="margin-right: 20px; color:white;"><i class="fab fa-linkedin"></i></a>
                     <a href="https://www.instagram.com/cerkezs/" target="_blank" style="color:white;"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             <div class="footer-col">
-                <h4>Hızlı Menü</h4>
+                <h4>HIZLI MENÜ</h4>
                 <ul>
                     <li><a href="index.html">Ana Sayfa</a></li>
                     <li><a href="hakkimda.html">Hakkımda</a></li>
@@ -175,7 +166,7 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Hizmetler</h4>
+                <h4>HİZMETLER</h4>
                 <ul>
                     <li><a href="hizmetler.html">Web Tasarım</a></li>
                     <li><a href="hizmetler.html">E-Ticaret</a></li>
@@ -183,11 +174,11 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>İletişim</h4>
+                <h4>İLETİŞİM</h4>
                 <ul>
-                    <li>iletisim@serdarseker.com.tr</li>
-                    <li>Afyonkarahisar, Türkiye</li>
-                    <li><a href="https://wa.me/905466744528" target="_blank" style="color: #25D366;">WhatsApp Hattı</a></li>
+                    <li style="color: var(--text-dim); font-size: 0.9rem;">iletisim@serdarseker.com.tr</li>
+                    <li style="color: var(--text-dim); font-size: 0.9rem;">Afyonkarahisar, Türkiye</li>
+                    <li style="margin-top: 10px;"><a href="https://wa.me/905466744528" target="_blank" style="color: #25D366; font-weight: 600;">WhatsApp Hattı</a></li>
                 </ul>
             </div>
         </div>
@@ -200,10 +191,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        AOS.init();
+        AOS.init({ once: true });
         gsap.registerPlugin(ScrollTrigger);
         VANTA.NET({ el: "#vanta-canvas", mouseControls: true, touchControls: true, minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00, color: 0x007aff, backgroundColor: 0x05070a, points: 10.00, maxDistance: 20.00, spacing: 16.00 });
-        gsap.to("#vanta-canvas", { scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 1.5 }, y: -100, scale: 1.2, opacity: 0.7 });
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
         hamburger.addEventListener('click', () => { navLinks.classList.toggle('active'); });
