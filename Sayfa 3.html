@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fosil Yakıtlar - Sayfa 3</title>
+    <style>
+        /* MOBİL AYARLARI */
+        @media (max-width: 768px) {
+            .ana-icerik {
+                flex-direction: column !important; /* Mobilde her zaman alt alta */
+                padding: 40px 20px !important;
+                height: auto !important;
+                text-align: center;
+            }
+            .metin-alani, .video-alani {
+                width: 100% !important;
+                padding: 0 !important;
+            }
+            .video-alani {
+                order: 2; /* Mobilde video altta kalsın */
+                margin-top: 20px;
+            }
+            .metin-alani {
+                order: 1; /* Mobilde yazı üstte kalsın */
+            }
+            h2 { font-size: 2.2em !important; }
+            .alt-nav { height: 80px !important; gap: 30px !important; }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden;">
+
+    <div style="display: flex; flex-direction: column; min-height: 100vh;">
+        
+        <div class="ana-icerik" style="flex: 1; display: flex; flex-direction: row-reverse; align-items: center; padding: 0 10%; gap: 50px;">
+            
+            <div class="metin-alani" style="flex: 1;">
+                <div style="width: 50px; height: 5px; background: #3498db; margin-bottom: 20px;"></div>
+                <h2 style="color: #2c3e50; font-size: 3.5em; margin: 0; line-height: 1.1;">Fosil Yakıt Kullanımı</h2>
+                <p style="color: #34495e; font-size: 1.5em; line-height: 1.6; margin-top: 30px;">
+                    Kömür, petrol ve doğal gaz gibi fosil yakıtların yakılması, atmosfere devasa miktarda karbondioksit (CO2) salınmasına neden olur.
+                </p>
+                <ul style="color: #7f8c8d; font-size: 1.2em; margin-top: 20px; list-style-type: square; text-align: left; display: inline-block;">
+                    <li>Ulaşım ve trafik yoğunluğu</li>
+                    <li>Sanayi tesisleri</li>
+                    <li>Termik santraller</li>
+                </ul>
+            </div>
+
+            <div class="video-alani" style="flex: 1; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); aspect-ratio: 16/9; background: #000;">
+                <video autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                    <source src="araba.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                </video>
+            </div>
+        </div>
+
+        <div class="alt-nav" style="height: 120px; display: flex; align-items: center; justify-content: center; gap: 100px; background: #f8f9fa; border-top: 1px solid #eee;">
+            
+            <a href="Sayfa 2.html" style="text-decoration: none; display: flex; align-items: center; color: #bdc3c7; font-size: 1.2em; font-weight: bold;">
+                <span style="font-size: 40px; margin-right: 15px;">&#10094;</span> GERİ
+            </a>
+
+            <div style="color: #2c3e50; font-weight: bold; font-size: 1.1em;">
+                Sayfa 3 / 10
+            </div>
+
+            <a href="Sayfa 4.html" style="text-decoration: none; display: flex; align-items: center; color: #3498db; font-size: 1.2em; font-weight: bold;">
+                İLERİ <span style="font-size: 40px; margin-left: 15px;">&#10095;</span>
+            </a>
+
+        </div>
+    </div>
+
+</body>
+</html>
