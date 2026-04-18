@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3T8HE6SD2D"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3T8HE6SD2D"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -51,7 +50,14 @@
         .portfolio-header { padding: 160px 10% 60px; text-align: center; }
         .portfolio-header h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 20px; }
 
-        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 0 10% 100px; max-width: 1200px; margin: 0 auto; }
+        .portfolio-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+            padding: 0 5% 100px; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
         
         .project-card { 
             background: rgba(255, 255, 255, 0.03); 
@@ -61,17 +67,18 @@
             overflow: hidden; 
             transition: 0.4s ease;
             position: relative;
+            height: 100%;
         }
         .project-card:hover { border-color: var(--accent); transform: translateY(-10px); }
         
-        .project-info { padding: 50px; }
-        .project-tag { color: var(--accent); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
-        .project-info h3 { font-size: 1.7rem; margin-bottom: 15px; color: #fff; }
-        .project-info p { color: var(--text-dim); line-height: 1.7; font-size: 1rem; margin-bottom: 25px; }
+        .project-info { padding: 40px; }
+        .project-tag { color: var(--accent); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        .project-info h3 { font-size: 1.5rem; margin-bottom: 15px; color: #fff; }
+        .project-info p { color: var(--text-dim); line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; }
         
         .project-link { 
             display: inline-flex; align-items: center; gap: 10px; color: #fff; 
-            text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s;
+            text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: 0.3s;
         }
         .project-link i { font-size: 0.8rem; transition: 0.3s; }
         .project-link:hover { color: var(--accent); }
@@ -115,7 +122,7 @@
             <div class="project-info">
                 <span class="project-tag">Endüstriyel Sistem Tasarımı</span>
                 <h3>İDM Mühendislik</h3>
-                <p>Makine ve yedek parça üretimi için geliştirilen, teknik hassasiyet ve kurumsal kimliği birleştiren modern dijital platform.</p>
+                <p>Makine ve yedek parça üretimi için geliştirilen, teknik hassasiyet ve kurumsal kimliği birleştiren dijital platform.</p>
                 <a href="https://www.idmmuhendislik.com.tr" target="_blank" class="project-link">Siteyi İncele <i class="fas fa-external-link-alt"></i></a>
             </div>
         </div>
@@ -124,8 +131,17 @@
             <div class="project-info">
                 <span class="project-tag">Kurumsal Web Tasarım</span>
                 <h3>Adıbelli Prefabrik Yapı</h3>
-                <p>Endüstriyel yapı sektörüne yönelik, ürün odaklı ve güven veren teknik bir web mimarisi. Mobil uyumlu ve SEO odaklı altyapı.</p>
+                <p>Endüstriyel yapı sektörüne yönelik, ürün odaklı ve güven veren teknik bir web mimarisi. Mobil uyumlu altyapı.</p>
                 <a href="https://www.adibelliprefabrikyapi.info/" target="_blank" class="project-link">Siteyi İncele <i class="fas fa-external-link-alt"></i></a>
+            </div>
+        </div>
+
+        <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="project-info">
+                <span class="project-tag">Web Tasarım & Sunum</span>
+                <h3>Özel Sunum Sistemi</h3>
+                <p>Akışkan geçişler ve modern mimariyle hazırlanan, Coğrafya projesine özel web tabanlı slayt yönetim sistemi.</p>
+                <a href="safiye/sunum.html" class="project-link">Projeyi İncele <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
