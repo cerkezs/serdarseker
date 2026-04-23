@@ -48,6 +48,29 @@ tailwind.config = {
 }
 </script>
 <style>
+  <style>
+/* Ölçüleri GitHub'daki gibi sabitlemek için zorunlu kurallar */
+html { font-size: 16px !important; }
+body { 
+  font-size: 1rem !important; 
+  line-height: 1.5 !important; 
+  overflow-x: hidden;
+}
+
+/* Konteynırı 1650px ile sınırlayıp ortalamak için */
+.max-w-\[1650px\] {
+  max-width: 1650px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}
+
+/* Resimlerin devasa olmasını engellemek için */
+img { 
+  max-width: 100%; 
+  height: auto; 
+}
+</style>
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
 .font-display{font-family:'Space Grotesk',sans-serif}
