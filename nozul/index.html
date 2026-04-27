@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nozul Makina — Endüstriyel Konveyör Sistemleri Üreticisi</title>
+<meta name="description" content="Bantlı, rulolu, zincirli, vidalı konveyör üretimi. 2001'den beri Türkiye'nin önde gelen endüstriyel taşıma sistemleri üreticisi. Hızlı teklif alın." />
+<meta name="author" content="Nozul Makina" />
+<meta name="theme-color" content="#ff7a2d" />
+<link rel="canonical" href="https://www.nozulmakina.com.tr/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" />
+<script src="https://cdn.tailwindcss.com?plugins=typography,forms,aspect-ratio" defer></script>
+<script src="assets/js/tailwind-config.js" defer></script>
+<link rel="stylesheet" href="assets/css/style.css" />
+
+<link rel="icon" href="favikon2.webp" type="image/png" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body class="bg-white text-ink">
+
+<!-- PRELOADER SECTION -->
+<style>
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: #ffffff; /* Temiz beyaz arka plan logoyu daha iyi gösterir */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 1s cubic-bezier(0.85, 0, 0.15, 1);
+  }
+  
+  .preloader-container {
+    position: relative;
+    width: 400px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawing-svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+  }
+
+  .real-logo {
+    position: absolute;
+    width: 320px;
+    height: auto;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 5;
+  }
+
+  .pencil-icon {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 20;
+    pointer-events: none;
+    /* Kalemin ucu sol altta olduğu için ona göre hizalayacağız */
+    transform-origin: 0% 100%; 
+    display: none; /* Başlangıçta gizli */
+  }
+
+  .logo-path {
+    fill: none;
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+  }
+
+  /* Animasyon Sınıfları */
+  .draw-anim {
+    animation: drawStroke 4s linear forwards;
+  }
+
+  @keyframes drawStroke {
+    to { stroke-dashoffset: 0; }
+  }
+
+  body.loaded #preloader {
+    transform: translateY(-100%);
+  }
+
+  body.drawing-done .real-logo {
+    opacity: 1;
+  }
+  
+  body.drawing-done .drawing-svg,
+  body.drawing-done .pencil-icon {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+</style>
+
+<!-- PRELOADER SECTION -->
+<style>
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: #ffffff;
+    /* Teknik Çizim Izgarası (Grid) */
+    background-image: 
+      linear-gradient(rgba(240, 240, 240, 0.5) 1px, transparent 1px),
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 1s cubic-bezier(0.85, 0, 0.15, 1);
+    overflow: hidden;
+  }
+
+  /* Arka Plan Gerçek Üretim Görseli (Watermark) */
+  .preloader-bg-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/images/preleader1.webp');
+    background-size: cover;
+    background-position: center;
+    filter: saturate(1.8) brightness(1.0) contrast(1.05);
+    opacity: 0.35; /* Renklerin tüm ihtişamıyla orada olduğunu hissettirmek için */
+    z-index: -1;
+  }
+
+  /* Teknik Çizim Izgarası (Görselin Üzerine) */
+  #preloader::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(200, 200, 200, 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200, 200, 200, 0.2) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+  }
+  
+  .preloader-container {
+    position: relative;
+    width: 90vw; /* Mobilde ekranın %90'ı */
+    max-width: 1000px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .masked-logo-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    clip-path: inset(0 100% 0 0); 
+    transition: clip-path 2s linear;
+    z-index: 10;
+  }
+
+  .masked-logo {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .pencil-icon {
+    position: absolute;
+    width: clamp(50px, 15vw, 105px); /* Mobilde küçülen kalem */
+    height: auto;
+    z-index: 20;
+    pointer-events: none;
+    left: 10%; 
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+  }
+
+  body.loaded #preloader {
+    transform: translateY(-100%);
+  }
+
+  body.drawing-active .masked-logo-container {
+    clip-path: inset(0 0 0 0); 
+  }
+</style>
+
+<script>
+  // ANİMASYON KONTROLÜ - SAYFA HİÇ ÇİZİLMEDEN YAPILMALI
+  (function() {
+    if (sessionStorage.getItem('preloaderShown')) {
+      document.documentElement.classList.add('preloader-skipped');
+    }
+  })();
+</script>
+
+<style>
+  /* Eğer animasyon geçildiyse preloader'ı tamamen yok et ve geçişleri iptal et */
+  .preloader-skipped #preloader {
+    display: none !important;
+    visibility: hidden !important;
+    transition: none !important;
+    transform: translateY(-100%) !important;
+  }
+  .preloader-skipped body {
+    overflow: visible !important;
+  }
+</style>
+
+<div id="preloader">
+  <div class="preloader-bg-image"></div>
+  <div class="preloader-container">
+    <div class="masked-logo-container" id="logoReveal">
+      <img src="nozulmakyenilogo.webp" alt="Nozul Makina" class="masked-logo">
+    </div>
+    <img src="assets/images/pencil.webp" id="pencil" class="pencil-icon" alt="pencil">
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const pencil = document.getElementById('pencil');
+    const preloader = document.getElementById('preloader');
+    
+    // Eğer zaten geçildiyse (yukarıdaki script ile) hiçbir şey yapma
+    if (sessionStorage.getItem('preloaderShown')) {
+      return;
+    }
+
+    const duration = 2000;
+    pencil.style.display = 'block';
+    
+    setTimeout(() => {
+      document.body.classList.add('drawing-active');
+      
+      let startTime = Date.now();
+      const containerWidth = document.getElementById('logoReveal').offsetWidth;
+      
+      function animate() {
+        let elapsed = Date.now() - startTime;
+        let progress = Math.min(elapsed / duration, 1);
+        
+        // Dinamik genişliğe göre kalem hareketi
+        let currentX = (containerWidth * progress);
+        pencil.style.left = currentX + 'px';
+        
+        let yOffset = Math.sin(elapsed / 50) * 12;
+        pencil.style.transform = `translateY(calc(-50% + ${yOffset}px)) rotate(${Math.sin(elapsed/100)*5}deg)`;
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      }
+      requestAnimationFrame(animate);
+
+      setTimeout(() => {
+        document.body.classList.add('loaded');
+        sessionStorage.setItem('preloaderShown', 'true');
+      }, duration + 500);
+    }, 100);
+  });
+</script>
+
+<header class="sticky top-0 z-50 bg-white/85 backdrop-blur-lg border-b border-gray-100">
+  <div class="max-w-[1650px] mx-auto px-4 lg:px-8 h-20 flex items-center justify-between">
+   <a href="index.html" class="flex items-center">
+    <img src="nozulmakyenilogo.webp" alt="Nozul Makina Logo" class="h-12 w-auto object-contain">
+   </a>
+
+    <nav class="hidden lg:flex items-center gap-2">
+      <a href="index.html" class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 nav-link">Anasayfa</a>
+      <a href="hakkimizda.html" class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 nav-link">Hakkımızda</a>
+      <a href="urunler.html" class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 nav-link">Ürünler</a>
+      
+      <div class="relative group">
+        <button class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 flex items-center gap-1 nav-link">
+          Sektörler
+          <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        
+        <div class="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+          <div class="bg-white rounded-2xl shadow-elegant border border-gray-100 p-2 flex flex-col gap-0.5 w-72">
+              <a href="sektor/gida.html" class="flex flex-col px-4 py-3 rounded-xl hover:bg-orange-50 transition-colors group">
+                <span class="text-sm font-semibold text-gray-900 transition-colors">Gıda Sektörü</span>
+                <span class="text-xs text-gray-400 mt-0.5">Hijyen ve verimlilik birlikte</span>
+              </a>
+              <a href="sektor/madencilik.html" class="flex flex-col px-4 py-3 rounded-xl hover:bg-orange-50 transition-colors group">
+                <span class="text-sm font-semibold text-gray-900 transition-colors">Madencilik Sektörü</span>
+                <span class="text-xs text-gray-400 mt-0.5">Aşındırıcı yüklere dayanıklı çözümler</span>
+              </a>
+              <a href="sektor/lojistik.html" class="flex flex-col px-4 py-3 rounded-xl hover:bg-orange-50 transition-colors group">
+                <span class="text-sm font-semibold text-gray-900 transition-colors">Lojistik &amp; Depo</span>
+                <span class="text-xs text-gray-400 mt-0.5">Sevkiyat hızını katlayın</span>
+              </a>
+              <a href="sektor/insaat-cimento.html" class="flex flex-col px-4 py-3 rounded-xl hover:bg-orange-50 transition-colors group">
+                <span class="text-sm font-semibold text-gray-900 transition-colors">İnşaat &amp; Çimento</span>
+                <span class="text-xs text-gray-400 mt-0.5">Toz ve dökme malzeme uzmanlığı</span>
+              </a>
+            </div>
+        </div>
+      </div>
+
+      <a href="projeler.html" class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 nav-link">Projeler</a>
+      <a href="referanslar.html" class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 nav-link">Referanslar</a>
+      <a href="iletisim.html" class="px-4 py-2.5 rounded-md text-base font-semibold transition text-gray-700 hover:text-primary hover:bg-gray-50 nav-link">İletişim</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="tel:905333305285" class="slide-btn inline-flex items-center gap-2 px-4 py-2.5 text-base font-bold text-gray-700 hover:text-white transition-colors duration-300 bg-gray-50 rounded-lg border border-gray-100 shadow-sm group">
+        <svg class="w-5 h-5 text-primary group-hover:text-white group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        <span class="hidden sm:inline">+90 533 330 52 85</span>
+      </a>
+      <button id="mnav" onclick="document.getElementById('mmenu').classList.toggle('hidden')" class="lg:hidden w-12 h-12 grid place-items-center rounded-md text-ink hover:bg-gray-50 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<!-- MOBİL MENÜ PANELİ -->
+<div id="mmenu" class="hidden fixed inset-0 z-[100] bg-white lg:hidden">
+  <div class="flex flex-col h-full">
+    <div class="flex items-center justify-between px-4 h-20 border-b border-gray-100">
+      <img src="nozulmakyenilogo.webp" alt="Nozul Makina Logo" class="h-10 w-auto">
+      <button onclick="document.getElementById('mmenu').classList.add('hidden')" class="w-10 h-10 grid place-items-center rounded-lg bg-gray-50 text-ink">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto py-8 px-4">
+      <nav class="flex flex-col gap-5">
+        <a href="index.html" class="text-xl font-bold text-ink">Anasayfa</a>
+        <a href="hakkimizda.html" class="text-xl font-bold text-ink">Hakkımızda</a>
+        <a href="urunler.html" class="text-xl font-bold text-ink">Ürünler</a>
+        
+        <!-- Sektörler Akordiyon -->
+        <div class="border-y border-gray-50 py-2">
+          <button onclick="document.getElementById('mobile-sektor-list').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')" 
+                  class="flex items-center justify-between w-full text-xl font-bold text-ink py-2">
+            Sektörler
+            <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="mobile-sektor-list" class="hidden mt-3 flex flex-col gap-3 pl-4 border-l-2 border-primary/20">
+            <a href="sektor/gida.html" class="text-lg font-medium text-gray-600">Gıda Sektörü</a>
+            <a href="sektor/madencilik.html" class="text-lg font-medium text-gray-600">Madencilik Sektörü</a>
+            <a href="sektor/lojistik.html" class="text-lg font-medium text-gray-600">Lojistik & Depo</a>
+            <a href="sektor/insaat-cimento.html" class="text-lg font-medium text-gray-600">İnşaat & Çimento</a>
+          </div>
+        </div>
+
+        <a href="projeler.html" class="text-xl font-bold text-ink">Projeler</a>
+        <a href="referanslar.html" class="text-xl font-bold text-ink">Referanslar</a>
+        <a href="blog.html" class="text-xl font-bold text-ink">Blog</a>
+        <a href="iletisim.html" class="text-xl font-bold text-ink">İletişim</a>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-gray-100 bg-gray-50">
+      <a href="tel:905333305285" class="flex items-center justify-center gap-3 w-full bg-gradient-primary text-white py-4 rounded-xl font-bold shadow-soft">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        <span>+90 533 330 52 85</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+
+<main>
+<section class="relative overflow-hidden bg-gradient-hero text-white">
+  <div class="absolute inset-0 bg-grid opacity-50"></div>
+  <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary/30 rounded-full blur-[120px]"></div>
+  <div class="relative max-w-[1400px] mx-auto px-4 lg:px-8 py-12 lg:py-28 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="fade-in">
+      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider">Endüstriyel Konveyör Üreticisi · 2001'den Beri</span>
+      <h1 class="font-display mt-5 text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1]">Üretiminizi Hızlandıran <span class="text-gradient">Konveyör Sistemleri</span></h1>
+      <p class="mt-6 max-w-xl text-base text-gray-300 leading-relaxed">Bantlı, rulolu, zincirli, vidalı… Sahanıza özel mühendislikle tasarlanan, dayanıklı ve verimli endüstriyel taşıma çözümleri.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="iletisim.html" class="inline-flex items-center gap-2 bg-gradient-primary text-white px-6 py-3 rounded-md font-semibold shadow-elegant hover:scale-105 transition">Hızlı Teklif Al →</a>
+        <a href="urunler.html" class="inline-flex items-center gap-2 border border-white/20 bg-white/5 backdrop-blur px-6 py-3 rounded-md font-semibold hover:bg-white/10 transition">Ürünleri İncele</a>
+      </div>
+      <div class="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-400">
+        <div class="flex items-center gap-2"><span class="text-primary">✓</span>Anahtar teslim kurulum</div>
+        <div class="flex items-center gap-2"><span class="text-primary">✓</span>Sahaya özel tasarım</div>
+        <div class="flex items-center gap-2"><span class="text-primary">✓</span>Satış sonrası destek</div>
+      </div>
+    </div>
+    <div class="relative fade-in" style="animation-delay:.15s">
+      <div class="absolute -inset-4 bg-gradient-primary opacity-30 blur-3xl rounded-3xl"></div>
+      <div class="relative overflow-hidden rounded-2xl border border-white/10 shadow-elegant aspect-[16/9]" id="hero-slider-container">
+        <img src="assets/images/OTOMATIK-AGIR-RULOLU-KONVEYOR-SISTEMI-1-2048x1152-1-min-png.webp" alt="Otomatik rulolu konveyör sistemi" class="absolute inset-0 w-full h-full object-cover hero-slide active" loading="eager"/>
+        <img src="assets/images/WhatsApp-Image-2024-01-16-at-10.40.52-scaled.webp" alt="Zincirli Konveyör Sistemi" class="absolute inset-0 w-full h-full object-cover hero-slide" loading="lazy"/>
+        <img src="assets/images/WhatsApp-Image-2024-07-20-at-09.14.02.webp" alt="Kauçuk Bantlı Konveyör" class="absolute inset-0 w-full h-full object-cover hero-slide" loading="lazy"/>
+        <img src="assets/images/AS-1.webp" alt="Vidalı Konveyör" class="absolute inset-0 w-full h-full object-cover hero-slide" loading="lazy"/>
+        
+        <!-- Slider Dots -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10" id="hero-slider-dots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="relative z-20 -mt-16 sm:-mt-24">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+    <div class="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] py-8 px-6 grid grid-cols-2 md:grid-cols-4 gap-y-10 md:gap-y-0 md:divide-x divide-gray-100">
+      
+      <!-- Stat 1 -->
+
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 mb-3 rounded-xl bg-orange-50 text-primary grid place-items-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        </div>
+        <div class="font-display text-4xl font-bold flex items-center justify-center">
+          <span class="counter text-primary" data-target="24">0</span><span class="text-primary">+</span>
+        </div>
+        <div class="text-sm font-semibold text-gray-500 mt-2 uppercase tracking-wide">Yıllık Tecrübe</div>
+      </div>
+
+      <!-- Stat 2 -->
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 mb-3 rounded-xl bg-orange-50 text-primary grid place-items-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div class="font-display text-4xl font-bold flex items-center justify-center">
+          <span class="counter text-primary" data-target="500">0</span><span class="text-primary">+</span>
+        </div>
+        <div class="text-sm font-semibold text-gray-500 mt-2 uppercase tracking-wide">Tamamlanmış Proje</div>
+      </div>
+
+      <!-- Stat 3 -->
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 mb-3 rounded-xl bg-orange-50 text-primary grid place-items-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        </div>
+        <div class="font-display text-4xl font-bold flex items-center justify-center">
+          <span class="counter text-primary" data-target="10">0</span><span class="text-primary">+</span>
+        </div>
+        <div class="text-sm font-semibold text-gray-500 mt-2 uppercase tracking-wide">Sektör Uzmanlığı</div>
+      </div>
+
+      <!-- Stat 4 -->
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 mb-3 rounded-xl bg-orange-50 text-primary grid place-items-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        </div>
+        <div class="font-display text-4xl font-bold text-primary flex items-center justify-center">
+          7/24
+        </div>
+        <div class="text-sm font-semibold text-gray-500 mt-2 uppercase tracking-wide">Saha Desteği</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="pt-10 pb-20">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+    <div class="max-w-2xl">
+      <span class="text-xs font-semibold text-primary uppercase tracking-wider">Ürünler</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-2">Her İhtiyaca Özel Konveyör Çözümleri</h2>
+      <p class="mt-3 text-gray-600">Üretim hattınız için doğru taşıma sistemini birlikte seçelim.</p>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <a href="urunler/pvc-bantli-konveyor.html" class="group max-w-[450px] mx-auto w-full rounded-2xl shadow-soft hover:shadow-elegant hover:-translate-y-1 transition flex flex-col card-sweep">
+          <div class="relative z-10 flex flex-col h-full w-full bg-white rounded-[inherit] overflow-hidden border border-gray-100">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+            <img src="assets/images/IMG_1554_500x540.webp" alt="PVC Bantlı Konveyör" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+          </div>
+          <div class="p-5 text-left">
+            <h3 class="font-display font-semibold text-lg group-hover:text-primary transition">PVC Bantlı Konveyör</h3>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">Hafif ve orta tonajlı ürünler için sessiz, hijyenik taşıma.</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary">Detaylar →</span>
+          </div>
+          </div>
+        </a>
+        <a href="urunler/kaucuk-bantli-konveyor.html" class="group max-w-[450px] mx-auto w-full rounded-2xl shadow-soft hover:shadow-elegant hover:-translate-y-1 transition flex flex-col card-sweep">
+          <div class="relative z-10 flex flex-col h-full w-full bg-white rounded-[inherit] overflow-hidden border border-gray-100">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+            <img src="assets/images/kaucukkonveyör/1.webp" alt="Kauçuk Bantlı Konveyör" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+          </div>
+          <div class="p-5 text-left">
+            <h3 class="font-display font-semibold text-lg group-hover:text-primary transition">Kauçuk Bantlı Konveyör</h3>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">Ağır hizmet ve dökme malzeme transferi için dayanıklı çözüm.</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary">Detaylar →</span>
+          </div>
+          </div>
+        </a>
+        <a href="urunler/rulolu-konveyor.html" class="group max-w-[450px] mx-auto w-full rounded-2xl shadow-soft hover:shadow-elegant hover:-translate-y-1 transition flex flex-col card-sweep">
+          <div class="relative z-10 flex flex-col h-full w-full bg-white rounded-[inherit] overflow-hidden border border-gray-100">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+            <img src="assets/images/rulolukonveyör/3.webp" alt="Rulolu Konveyör" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+          </div>
+          <div class="p-5 text-left">
+            <h3 class="font-display font-semibold text-lg group-hover:text-primary transition">Rulolu Konveyör</h3>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">Kutu, palet ve düzgün tabanlı ürünler için.</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary">Detaylar →</span>
+          </div>
+          </div>
+        </a>
+        <a href="urunler/zincirli-konveyor.html" class="group max-w-[450px] mx-auto w-full rounded-2xl shadow-soft hover:shadow-elegant hover:-translate-y-1 transition flex flex-col card-sweep">
+          <div class="relative z-10 flex flex-col h-full w-full bg-white rounded-[inherit] overflow-hidden border border-gray-100">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+            <img src="assets/images/WhatsApp-Image-2024-01-16-at-10.40.52-scaled.webp" alt="Zincirli Konveyör" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+          </div>
+          <div class="p-5 text-left">
+            <h3 class="font-display font-semibold text-lg group-hover:text-primary transition">Zincirli Konveyör</h3>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">Yüksek tonajlı ve sıcak malzeme taşıma çözümü.</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary">Detaylar →</span>
+          </div>
+          </div>
+        </a>
+        <a href="urunler/vidali-konveyor.html" class="group max-w-[450px] mx-auto w-full rounded-2xl shadow-soft hover:shadow-elegant hover:-translate-y-1 transition flex flex-col card-sweep">
+          <div class="relative z-10 flex flex-col h-full w-full bg-white rounded-[inherit] overflow-hidden border border-gray-100">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+            <img src="assets/images/AS-1.webp" alt="Vidalı Konveyör (Helezon)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+          </div>
+          <div class="p-5 text-left">
+            <h3 class="font-display font-semibold text-lg group-hover:text-primary transition">Vidalı Konveyör (Helezon)</h3>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">Toz, granül ve dökme malzeme için kapalı taşıma.</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary">Detaylar →</span>
+          </div>
+          </div>
+        </a>
+        <a href="urunler/elevator.html" class="group max-w-[450px] mx-auto w-full rounded-2xl shadow-soft hover:shadow-elegant hover:-translate-y-1 transition flex flex-col card-sweep">
+          <div class="relative z-10 flex flex-col h-full w-full bg-white rounded-[inherit] overflow-hidden border border-gray-100">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+            <img src="assets/images/NM-ELEVATOR-001_600x600_500x540.webp" alt="Kovalı Elevatör" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+          </div>
+          <div class="p-5 text-left">
+            <h3 class="font-display font-semibold text-lg group-hover:text-primary transition">Kovalı Elevatör</h3>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">Düşey yönde dökme malzeme taşıma sistemi.</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary">Detaylar →</span>
+          </div>
+          </div>
+        </a>
+    </div>
+    <div class="text-center mt-10">
+      <a href="urunler.html" class="inline-flex items-center gap-2 text-primary font-semibold hover:underline">Tüm ürünleri gör →</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-12 bg-surface">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+    <div class="max-w-2xl text-center mx-auto">
+      <span class="text-xs font-semibold text-primary uppercase tracking-wider">Sektörler</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-2">Çözüm Sunduğumuz Endüstriler</h2>
+    </div>
+    <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <a href="sektor/gida.html" class="group relative overflow-hidden rounded-2xl bg-ink text-white aspect-[4/5] block">
+          <img src="assets/images/IMG_1554_500x540.webp" alt="Gıda Sektörü" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-110 transition duration-700"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent"></div>
+          <div class="relative h-full p-6 flex flex-col justify-end">
+            <div class="text-xs uppercase tracking-wider text-primary font-semibold">Hijyen ve verimlilik birlikte</div>
+            <h3 class="font-display text-xl font-bold mt-1">Gıda Sektörü</h3>
+            <span class="mt-3 text-sm text-gray-300 group-hover:text-primary transition">Keşfet →</span>
+          </div>
+        </a>
+        <a href="sektor/madencilik.html" class="group relative overflow-hidden rounded-2xl bg-ink text-white aspect-[4/5] block">
+          <img src="assets/images/WhatsApp-Image-2024-07-20-at-09.14.02.webp" alt="Madencilik Sektörü" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-110 transition duration-700"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent"></div>
+          <div class="relative h-full p-6 flex flex-col justify-end">
+            <div class="text-xs uppercase tracking-wider text-primary font-semibold">Aşındırıcı yüklere dayanıklı çözümler</div>
+            <h3 class="font-display text-xl font-bold mt-1">Madencilik Sektörü</h3>
+            <span class="mt-3 text-sm text-gray-300 group-hover:text-primary transition">Keşfet →</span>
+          </div>
+        </a>
+        <a href="sektor/lojistik.html" class="group relative overflow-hidden rounded-2xl bg-ink text-white aspect-[4/5] block">
+          <img src="assets/images/OTOMATIK-AGIR-RULOLU-KONVEYOR-SISTEMI-1-2048x1152-1-min-png.webp" alt="Lojistik &amp; Depo" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-110 transition duration-700"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent"></div>
+          <div class="relative h-full p-6 flex flex-col justify-end">
+            <div class="text-xs uppercase tracking-wider text-primary font-semibold">Sevkiyat hızını katlayın</div>
+            <h3 class="font-display text-xl font-bold mt-1">Lojistik &amp; Depo</h3>
+            <span class="mt-3 text-sm text-gray-300 group-hover:text-primary transition">Keşfet →</span>
+          </div>
+        </a>
+        <a href="sektor/insaat-cimento.html" class="group relative overflow-hidden rounded-2xl bg-ink text-white aspect-[4/5] block">
+          <img src="assets/images/AS-1.webp" alt="İnşaat &amp; Çimento" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-110 transition duration-700"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent"></div>
+          <div class="relative h-full p-6 flex flex-col justify-end">
+            <div class="text-xs uppercase tracking-wider text-primary font-semibold">Toz ve dökme malzeme uzmanlığı</div>
+            <h3 class="font-display text-xl font-bold mt-1">İnşaat &amp; Çimento</h3>
+            <span class="mt-3 text-sm text-gray-300 group-hover:text-primary transition">Keşfet →</span>
+          </div>
+        </a>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-gray-50/50 border-t border-gray-100">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="text-xs font-semibold text-primary uppercase tracking-wider">Kurumsal Güç</span>
+      <h2 class="font-display mt-3 text-3xl md:text-5xl font-bold text-ink">Neden Nozul Makina?</h2>
+      <p class="mt-4 text-gray-600 text-lg">Endüstriyel taşıma sistemlerinde 24 yılı aşkın tecrübe, yerli üretim gücü ve mühendislik uzmanlığıyla çözüm ortağınızız.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Madde 1 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white p-8 rounded-2xl shadow-soft h-full border border-gray-100 transition-all duration-300 relative z-10">
+          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold text-ink mb-3">Mühendislik Odaklı Çözümler</h3>
+          <p class="text-gray-600 leading-relaxed text-sm">Sahanızın ihtiyacına en uygun sistemi, verimliliği artıran ileri mühendislik teknikleriyle tasarlıyoruz.</p>
+        </div>
+      </div>
+
+      <!-- Madde 2 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white p-8 rounded-2xl shadow-soft h-full border border-gray-100 transition-all duration-300 relative z-10">
+          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold text-ink mb-3">24+ Yıllık Tecrübe</h3>
+          <p class="text-gray-600 leading-relaxed text-sm">2001'den bu yana binlerce başarılı projeye imza atmanın verdiği güvenle her zaman en iyisini sunuyoruz.</p>
+        </div>
+      </div>
+
+      <!-- Madde 3 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white p-8 rounded-2xl shadow-soft h-full border border-gray-100 transition-all duration-300 relative z-10 overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-primary/5 rounded-full -z-10"></div>
+          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold text-ink mb-3">%100 Yerli Üretim</h3>
+          <p class="text-gray-600 leading-relaxed text-sm">Tasarım ve üretim süreçlerimizi kendi tesislerimizde, milli sermaye ve yerli iş gücüyle gerçekleştiriyoruz.</p>
+        </div>
+      </div>
+
+      <!-- Madde 4 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white p-8 rounded-2xl shadow-soft h-full border border-gray-100 transition-all duration-300 relative z-10">
+          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold text-ink mb-3">Yüksek Dayanıklılık</h3>
+          <p class="text-gray-600 leading-relaxed text-sm">Ağır sanayi koşullarına uygun, uzun ömürlü ve düşük bakım maliyetli sistemlerle yatırımınızı koruyoruz.</p>
+        </div>
+      </div>
+
+      <!-- Madde 5 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white p-8 rounded-2xl shadow-soft h-full border border-gray-100 transition-all duration-300 relative z-10">
+          <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold text-ink mb-3">7/24 Teknik Destek</h3>
+          <p class="text-gray-600 leading-relaxed text-sm">Kurulumdan montaja ve satış sonrası servise kadar her an uzman ekibimizle sahanızda yanınızdayız.</p>
+        </div>
+      </div>
+
+      <!-- Bonus: Yerli Üretim Amblemi gibi duran CTA Kartı -->
+      <div class="bg-ink p-8 rounded-2xl shadow-elegant h-full border border-white/10 flex flex-col justify-center items-center text-center group">
+        <div class="text-primary text-5xl mb-4 font-bold tracking-tighter">TR</div>
+        <div class="text-white font-bold text-lg leading-tight uppercase tracking-widest mb-4">Türkiye'nin <br>Mühendislik Gücü</div>
+        <a href="iletisim.html" class="text-sm bg-primary text-white px-6 py-2 rounded-full font-semibold hover:bg-orange-600 transition-colors">Bizimle İletişime Geçin</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-12 bg-white">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs font-semibold text-primary uppercase tracking-wider">Müşteri Deneyimi</span>
+      <h2 class="font-display mt-3 text-3xl md:text-4xl font-bold text-ink">Bizi Tercih Eden Müşterilerimiz</h2>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Müşteri 1 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white border border-gray-100 rounded-[inherit] p-6 shadow-soft relative z-10 h-full">
+          <div class="text-primary text-3xl">"</div>
+          <p class="text-gray-700 leading-relaxed">Sahaya özel mühendislik yaklaşımları sayesinde projemiz hem zamanında hem de tahminden düşük maliyetle tamamlandı. Saha ekibi çok profesyonel.</p>
+          <div class="mt-6 pt-4 border-t border-gray-100">
+            <div class="font-semibold">Mehmet K.</div>
+            <div class="text-sm text-gray-500">Üretim Müdürü • Demir-Çelik Sektörü</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Müşteri 2 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white border border-gray-100 rounded-[inherit] p-6 shadow-soft relative z-10 h-full">
+          <div class="text-primary text-3xl">"</div>
+          <p class="text-gray-700 leading-relaxed">24 saat içinde teklif aldık, 6 hafta içinde devreye aldık. Bu hızda ve kalitede başka bir üretici bulamadık. Tavsiye ediyorum.</p>
+          <div class="mt-6 pt-4 border-t border-gray-100">
+            <div class="font-semibold">Ayşe Y.</div>
+            <div class="text-sm text-gray-500">Satın Alma Yöneticisi • Gıda Sektörü</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Müşteri 3 -->
+      <div class="card-sweep rounded-2xl group">
+        <div class="bg-white border border-gray-100 rounded-[inherit] p-6 shadow-soft relative z-10 h-full">
+          <div class="text-primary text-3xl">"</div>
+          <p class="text-gray-700 leading-relaxed">Hijyen standartlarımıza tam uyum sağlayan paslanmaz hatlar teslim edildi. Denetimden tam puan aldık. Çok memnunuz.</p>
+          <div class="mt-6 pt-4 border-t border-gray-100">
+            <div class="font-semibold">Ahmet D.</div>
+            <div class="text-sm text-gray-500">Kalite Müdürü • Tavukçuluk Sektörü</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-12 bg-white overflow-hidden border-t border-gray-100">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-8 mb-6 text-center">
+    <h2 class="font-display text-2xl font-bold text-gray-800">Bize Güvenen Markalar</h2>
+  </div>
+  <div class="relative flex items-center">
+    <div class="animate-marquee flex items-center gap-16 pr-16">
+      <img src="referanslar/5k.webp" alt="5K" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/alkim.webp" alt="Alkim" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/ankara.webp" alt="Ankara" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/beypilic.webp" alt="Beypilic" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/cansan.webp" alt="Cansan" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/cpyem.webp" alt="CP Yem" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/durukan.webp" alt="Durukan" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/edirne.webp" alt="Edirne" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/erkunt.webp" alt="Erkunt" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/eskisehir.webp" alt="Eskisehir" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/gurok.webp" alt="Gurok" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/ilgin.webp" alt="Ilgın" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/isdemir.webp" alt="Isdemir" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/izosis.webp" alt="Izosis" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/kalde.webp" alt="Kalde" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/lazzoni.webp" alt="Lazzoni" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/manet.webp" alt="Manet" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/metaltek.webp" alt="Metaltek" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/mke.webp" alt="MKE" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/olimpia.webp" alt="Olimpia" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/palme.webp" alt="Palme" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/patis.webp" alt="Patis" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/polatlı.webp" alt="Polatlı" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/ravza.webp" alt="Ravza" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      
+      <img src="referanslar/5k.webp" alt="5K" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/alkim.webp" alt="Alkim" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/ankara.webp" alt="Ankara" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/beypilic.webp" alt="Beypilic" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/cansan.webp" alt="Cansan" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/cpyem.webp" alt="CP Yem" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/durukan.webp" alt="Durukan" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/edirne.webp" alt="Edirne" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/erkunt.webp" alt="Erkunt" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/eskisehir.webp" alt="Eskisehir" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/gurok.webp" alt="Gurok" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/ilgin.webp" alt="Ilgın" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/isdemir.webp" alt="Isdemir" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/izosis.webp" alt="Izosis" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/kalde.webp" alt="Kalde" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/lazzoni.webp" alt="Lazzoni" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/manet.webp" alt="Manet" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/metaltek.webp" alt="Metaltek" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/mke.webp" alt="MKE" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/olimpia.webp" alt="Olimpia" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/palme.webp" alt="Palme" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/patis.webp" alt="Patis" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/polatlı.webp" alt="Polatlı" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+      <img src="referanslar/ravza.webp" alt="Ravza" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all duration-300">
+    </div>
+  </div>
+</section>
+</main>
+
+
+  
+<footer class="bg-ink text-white">
+  <div class="max-w-[1650px] mx-auto px-4 lg:px-8 py-10 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <a href="index.html" class="flex items-center gap-3 font-display font-bold text-xl text-white leading-none">
+        <img src="nozulfooterlogo.webp" alt="Nozul Makina Logo" class="h-12 w-auto object-contain">
+      </a>
+      
+      <p class="mt-6 text-sm leading-relaxed text-white">2001'den beri endüstriyel konveyör ve taşıma sistemleri üretiyoruz. Gıda, madencilik, inşaat ve genel sanayi için güvenilir çözümler.</p>
+      
+      <div class="flex gap-3 mt-6">
+        <a href="https://www.linkedin.com/in/nozul-makina-29576a219/" target="_blank" rel="noreferrer" class="w-9 h-9 grid place-items-center rounded-md bg-white/10 hover:bg-primary transition-all group" aria-label="LinkedIn">
+          <svg class="w-4 h-4 transition-colors text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/nozulmakina.tr/" target="_blank" rel="noreferrer" class="w-9 h-9 grid place-items-center rounded-md bg-white/10 hover:bg-primary transition-all group" aria-label="Instagram">
+          <svg class="w-4 h-4 transition-colors text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@nozulmakina-youtoube" target="_blank" rel="noreferrer" class="w-9 h-9 grid place-items-center rounded-md bg-white/5 hover:bg-primary transition-all group" aria-label="YouTube">
+          <svg class="w-4 h-4 transition-colors text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-primary mb-4">Kurumsal</h3>
+      <ul class="space-y-2 text-sm text-white">
+        <li><a href="hakkimizda.html" class="hover:text-primary transition-colors">Hakkımızda</a></li>
+        <li><a href="projeler.html" class="hover:text-primary transition-colors">Projeler</a></li>
+        <li><a href="referanslar.html" class="hover:text-primary transition-colors">Referanslar</a></li>
+        <li><a href="blog.html" class="hover:text-primary transition-colors">Blog</a></li>
+        <li><a href="iletisim.html" class="hover:text-primary transition-colors">İletişim</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-primary mb-4">Ürünler</h3>
+      <ul class="space-y-2 text-sm text-white">
+        <li><a href="../urunler/pvc-bantli-konveyor.html" class="hover:text-primary transition-colors">PVC Bantlı Konveyör</a></li>
+        <li><a href="../urunler/kaucuk-bantli-konveyor.html" class="hover:text-primary transition-colors">Kauçuk Bantlı Konveyör</a></li>
+        <li><a href="../urunler/rulolu-konveyor.html" class="hover:text-primary transition-colors">Rulolu Konveyör</a></li>
+        <li><a href="../urunler/zincirli-konveyor.html" class="hover:text-primary transition-colors">Zincirli Konveyör</a></li>
+        <li><a href="../urunler/vidali-konveyor.html" class="hover:text-primary transition-colors">Vidalı Konveyör (Helezon)</a></li>
+        <li><a href="../urunler/elevator.html" class="hover:text-primary transition-colors">Kovalı Elevatör</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-primary mb-4">İletişim</h3>
+      <ul class="space-y-3 text-sm text-white">
+        <li class="flex items-center gap-2">
+          <span class="text-primary w-5 text-center">📞</span>
+          <a href="tel:905333305285" class="hover:text-primary transition-colors">+90 533 330 52 85</a>
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-primary w-5 text-center">✉️</span>
+          <a href="mailto:info@nozulmakina.com.tr" class="hover:text-primary transition-colors">info@nozulmakina.com.tr</a>
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-primary w-5 text-center">📍</span>
+          <span>ARI SANAYİ SİTESİ 1418 CADDE NO : 38 İVOKSAN YENİMAHALLE -ANKARA</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="max-w-[1650px] mx-auto px-4 lg:px-8 py-6 text-xs text-white/70 flex flex-col md:flex-row justify-between items-center gap-4">
+      <p>© Nozul Makina. Tüm hakları saklıdır.</p>
+      <p>
+        <a href="http://www.serdarseker.com.tr" target="_blank" class="hover:text-primary transition-all duration-300">
+          Copyright 2026 © Designed by <span class="font-semibold">Serdar ŞEKER</span>
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+
+
+
+
+<!-- WhatsApp Floating Button -->
+<a href="https://api.whatsapp.com/send/?phone=905333305285" target="_blank" class="fixed bottom-6 right-6 z-[9999] text-white w-16 h-16 transition-transform flex items-center justify-center" aria-label="WhatsApp ile İletişime Geçin">
+  <i class="fa-brands fa-whatsapp fa-beat-fade" style="color: rgb(52, 224, 13); font-size: 50px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));"></i>
+</a>
+
+</body>
+</html>
