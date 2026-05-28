@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yurdunal Teklif Sistemi</title>
+    <link rel="icon" href="logo.jpeg" type="image/jpeg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff8c00">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').then(registration => {
+            console.log('ServiceWorker kayıt başarılı: ', registration);
+          }).catch(err => {
+            console.log('ServiceWorker kayıt hatası: ', err);
+          });
+        });
+      }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <!-- html2pdf.js - Lokal -->
+    <script src="html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- Sol Panel: Form -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Teklif Bilgileri</h2>
+            <p>PDF üzerinde görünecek bilgileri giriniz.</p>
+        </div>
+        
+        <div class="form-group">
+            <label>Müşteri Adı (1)</label>
+            <input type="text" id="input-1" placeholder="Müşteri Adı">
+        </div>
+        <div class="form-group">
+            <label>Teklif Veren (2)</label>
+            <input type="text" id="input-2" placeholder="Teklif Veren">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Telefon (3)</label>
+                <input type="text" id="input-3-tel" value="+90 535 576 31 59">
+            </div>
+            <div class="form-group">
+                <label>E-Mail</label>
+                <input type="text" id="input-3-email" value="info@yurdunal.com.tr">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Teklif/Sipariş No (4)</label>
+                <input type="text" id="input-4" placeholder="Örn: 2026-001">
+            </div>
+            <div class="form-group">
+                <label>Teklif Tarihi (5)</label>
+                <input type="date" id="input-5">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Ödeme Şekli (6)</label>
+                <input type="text" id="input-6" placeholder="Örn: Nakit / Havale">
+            </div>
+            <div class="form-group">
+                <label>Planlanan Teslim (7)</label>
+                <input type="text" id="input-7" placeholder="Örn: 10 İş Günü">
+            </div>
+        </div>
+
+        <hr class="divider">
+        <div class="form-group">
+            <label>Para Birimi</label>
+            <div class="currency-selector" id="currency-selector">
+                <button type="button" class="currency-btn active" data-symbol="₺" data-code="TL" onclick="setCurrency(this)">TL (₺)</button>
+                <button type="button" class="currency-btn" data-symbol="$" data-code="USD" onclick="setCurrency(this)">Dolar ($)</button>
+                <button type="button" class="currency-btn" data-symbol="€" data-code="EUR" onclick="setCurrency(this)">Euro (€)</button>
+            </div>
+        </div>
+
+        <hr class="divider">
+        <h3>Ürün Kalemleri</h3>
+        
+        <div id="items-container">
+            <!-- JavaScript ile kalemler buraya eklenecek -->
+        </div>
+
+        <button class="btn-add-item" onclick="addNewItemRow()">+ Yeni Kalem Ekle</button>
+
+        <hr class="divider">
+        <div class="form-group">
+            <label>Açıklamalar</label>
+            <textarea id="input-aciklama" rows="3" placeholder="Eklemek istediğiniz notlar..."></textarea>
+        </div>
+
+        <hr class="divider">
+        <h3>Onay Simgeleri</h3>
+        <div class="form-row" style="margin-bottom: 20px;">
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="check-kase" style="width: 16px; height: 16px; cursor: pointer;" onchange="toggleKaseSimza()">
+                <label for="check-kase" style="margin: 0; cursor: pointer; font-size: 14px;">Kaşe Ekle</label>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="check-simza" style="width: 16px; height: 16px; cursor: pointer;" onchange="toggleKaseSimza()">
+                <label for="check-simza" style="margin: 0; cursor: pointer; font-size: 14px;">İmza Ekle</label>
+            </div>
+        </div>
+
+        <div class="btn-row desktop-only">
+            <button class="btn-download" onclick="downloadPDF()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                PDF Kaydet
+            </button>
+            <button class="btn-print" onclick="printPage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Yazdır
+            </button>
+        </div>
+
+        <button class="btn-mobile-preview mobile-only" onclick="openMobilePreview()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Önizleme Göster
+        </button>
+
+        <div class="creator-signature">
+            Yurdunal Teklif Sistemi • Created by <strong>Serdar ŞEKER</strong>
+        </div>
+    </div>
+
+    <!-- Sağ Panel: Önizleme -->
+    <div class="preview-container" id="preview-container">
+        
+        <!-- Mobil Önizleme Üst Barı -->
+        <div class="mobile-preview-header mobile-only">
+            <button class="btn-close-preview" onclick="closeMobilePreview()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Geri Dön
+            </button>
+            <button class="btn-share-preview" id="btn-share-preview" onclick="sharePDFMobile()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                Paylaş
+            </button>
+        </div>
+
+        <div class="a4-page" id="pdf-content">
+            
+            <!-- Üst Başlık ve Logo Alanı -->
+            <div class="header-area">
+                <div class="logo-box">
+                    <img src="logo.jpeg" alt="Yurdunal Makina" id="company-logo" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+                    <h1 id="logo-text" style="display: none; color: #ff8c00; margin: 0; font-size: 32px; font-weight: 900; font-family: Arial, sans-serif;">YURDUNAL <span style="color: #333;">MAKİNA</span></h1>
+                    <p class="company-title">İTHALAT VE İHRACAT SAN. TİC. LTD. ŞTİ</p>
+                </div>
+                <div class="contact-info">
+                    <div class="info-row"><span class="info-label">ADRES</span><span class="info-sep">:</span><span class="info-val">1. Cad. 12. Sok. Gizem Yapı Kooperatifi B Blok No:1/E OSB / Afyonkarahisar</span></div>
+                    <div class="info-row"><span class="info-label">TELEFON</span><span class="info-sep">:</span><span class="info-val">(535) 576-31 59</span></div>
+                    <div class="info-row"><span class="info-label">E-MAİL</span><span class="info-sep">:</span><span class="info-val">info@yurdunal.com.tr</span></div>
+                    <div class="info-row"><span class="info-label">WEB</span><span class="info-sep">:</span><span class="info-val">www.yurdunal.com.tr</span></div>
+                </div>
+            </div>
+
+            <!-- Form Başlığı -->
+            <h2 class="form-title">MÜŞTERİ TEKLİF VE SİPARİŞ FORMU</h2>
+
+            <!-- Müşteri Bilgileri Tablosu -->
+            <table class="info-table">
+                <tr>
+                    <td class="bg-gray bold w-20">MÜŞTERİ ADI</td>
+                    <td class="w-30" id="out-1"></td>
+                    <td class="bg-gray bold w-20">TEKLİF /<br>SİPARİŞ NO</td>
+                    <td class="w-30" id="out-4"></td>
+                </tr>
+                <tr>
+                    <td class="bg-gray bold">TEKLİF VEREN</td>
+                    <td id="out-2"></td>
+                    <td class="bg-gray bold">TEKLİF TARİHİ</td>
+                    <td id="out-5"></td>
+                </tr>
+                <tr>
+                    <td class="bg-gray bold">TELEFON</td>
+                    <td id="out-3-tel">+90 535 576 31 59</td>
+                    <td class="bg-gray bold">ÖDEME ŞEKLİ</td>
+                    <td id="out-6"></td>
+                </tr>
+                <tr>
+                    <td class="bg-gray bold">E-Mail</td>
+                    <td class="underline" id="out-3-email">info@yurdunal.com.tr</td>
+                    <td class="bg-gray bold">PLANLANAN<br>TESLİM TARİHİ</td>
+                    <td id="out-7"></td>
+                </tr>
+            </table>
+
+            <!-- Kalemler Tablosu -->
+            <table class="items-table" id="out-items-table">
+                <thead>
+                    <tr class="bg-gray">
+                        <th class="w-5">NO</th>
+                        <th class="w-45">İŞİN ADI</th>
+                        <th class="w-10">MİKTARI</th>
+                        <th class="w-20">BR.FİYATI</th>
+                        <th class="w-20">TUTARI</th>
+                    </tr>
+                </thead>
+                <tbody id="out-items-body">
+                    <!-- Satırlar JS ile oluşturulacak -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" rowspan="3" class="align-top text-left no-border-right">
+                            <span class="bold">AÇIKLAMALAR:</span><br>
+                            <span id="out-aciklama" class="aciklama-text"></span>
+                        </td>
+                        <td class="bg-gray bold text-right no-border-left">TOPLAM TUTAR</td>
+                        <td class="text-right"><span class="currency">₺</span><span id="out-toplam">-</span></td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray bold text-right no-border-left">20 % KDV</td>
+                        <td class="text-right"><span class="currency">₺</span><span id="out-kdv">-</span></td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray bold text-right no-border-left">GENEL TOPLAM</td>
+                        <td class="text-right"><span class="currency">₺</span><span id="out-genel-toplam">-</span></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- İmzalar + Banka (Sayfa bölünmesinden korunur) -->
+            <div class="signature-bank-block">
+            <!-- İmzalar -->
+            <table class="signature-table">
+                <tr>
+                    <td class="w-50 text-center bold">SİPARİŞİ ALAN / TEKLİF VEREN</td>
+                    <td class="w-50 text-center bold">MÜŞTERİ ONAYI</td>
+                </tr>
+                <tr>
+                    <td class="align-top signature-box" style="padding: 0 !important; vertical-align: top;">
+                        <div style="position: relative; width: 100%; min-height: 80px; padding: 10px 5px 5px 5px;">
+                            <div style="position: relative; z-index: 1;">
+                                Adı-Soyadı :<br><br>
+                                İmza :
+                            </div>
+                            <img src="kase.png" id="out-kase" alt="Kaşe" style="display: none; position: absolute; top: -55px; left: 25px; width: 220px; max-width: none; z-index: 2; opacity: 0.85;">
+                            <img src="simza.png" id="out-simza" alt="İmza" style="display: none; position: absolute; top: -50px; left: 45px; width: 220px; max-width: none; z-index: 3;">
+                        </div>
+                    </td>
+                    <td class="align-top signature-box">
+                        Adı-Soyadı :<br><br>
+                        İmza/Kaşe :
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Banka Bilgileri -->
+            <div class="bank-info">
+                HALK BANKASI - YURDUNAL MAKİNE İTHALAT VE İHRACAT SAN. TİC. LTD. ŞTİ - TR92 0001 2009 1890 0010 2612 70
+            </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mobil Sabit Alt Bar - Her zaman görünür -->
+    <div class="mobile-fixed-bar" id="mobile-fixed-bar">
+        <button onclick="openMobilePreview()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Önizleme & Paylaş
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
