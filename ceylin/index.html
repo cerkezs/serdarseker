@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Ceylin Bebek</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E91E63">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            width: 100vw; height: 100vh; 
+            background: url('background.png') no-repeat center center fixed; 
+            background-size: cover; 
+            color: white; 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: flex-end; /* İÇERİĞİ AŞAĞI YASLADIK */
+            padding-bottom: 12vh; /* Alttan biraz boşluk bıraktık ki tam kenara yapışmasın */
+            text-align: center; overflow: hidden;
+        }
+        .overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.35); z-index: 1; /* Fotoğraf daha net görünsün diye siyahlığı biraz azalttım */
+        }
+        .content {
+            position: relative; z-index: 2; padding: 10px; display: flex; flex-direction: column; align-items: center; width: 100%;
+        }
+        h1 { font-size: 24px; font-weight: bold; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        
+        .countdown-container {
+            display: flex;
+            flex-wrap: wrap; /* Sığmazsa alt satıra geçmesini sağlar */
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            max-width: 380px; /* Mobilde düzgün kırılsın diye genişlik sınırı */
+        }
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 12px;
+            min-width: 60px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+        }
+        .time-val {
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+        .time-lbl {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .quote { font-size: 16px; font-style: italic; margin-top: 20px; margin-bottom: 25px; padding: 0 20px; line-height: 1.4; text-shadow: 1px 1px 4px rgba(0,0,0,0.9); }
+        .btn {
+            background-color: #E91E63; color: white; border: none; padding: 12px 25px; 
+            font-size: 16px; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        input[type="date"] {
+            position: absolute; opacity: 0; pointer-events: none;
+        }
+
+        /* MOBİL EKRANLAR İÇİN ÖZEL KÜÇÜLTME (RESPONSIVE) */
+        @media (max-width: 380px) {
+            .time-box { min-width: 55px; padding: 6px 8px; gap: 2px; }
+            .time-val { font-size: 22px; }
+            .time-lbl { font-size: 10px; }
+            h1 { font-size: 20px; margin-bottom: 15px;}
+            .quote { font-size: 14px; margin-top: 15px; margin-bottom: 20px;}
+            body { padding-bottom: 8vh; } /* Çok küçük ekranda biraz daha aşağı insin */
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="content">
+        <h1>Ceylin Bebek İçin Geri Sayım</h1>
+        
+        <div class="countdown-container" id="countdown-container">
+            <!-- JS BURAYI DOLDURACAK -->
+        </div>
+
+        <div class="quote" id="quote-text">
+            "Hoş geldin dünyaya, meleklerin duası seninle olsun."
+        </div>
+
+        <button class="btn" id="change-date-btn">Tarihi Değiştir</button>
+        <input type="date" id="date-picker">
+    </div>
+
+    <script>
+        const quotes = [
+            "Allah'ım, bu yavruyu İslam fıtratı üzere yaşat.",
+            "Bebekler dünyanın en güzel armağanıdır.",
+            "Rabbim, onu salih/saliha kullarından eyle.",
+            "Göz aydınlığı bir nesil nasip et Allah'ım.",
+            "Hoş geldin dünyaya, meleklerin duası seninle olsun.",
+            "Allah'ım onu her türlü kötülükten koru.",
+            "Rabbim, anne babasına hayırlı bir evlat eyle."
+        ];
+
+        let targetDate = localStorage.getItem('ceylinTargetDate');
+        if (!targetDate) {
+            let d = new Date();
+            d.setDate(d.getDate() + 45);
+            targetDate = d.toISOString().split('T')[0];
+            localStorage.setItem('ceylinTargetDate', targetDate);
+        }
+
+        const datePicker = document.getElementById('date-picker');
+        datePicker.value = targetDate;
+
+        document.getElementById('change-date-btn').addEventListener('click', () => {
+            if(datePicker.showPicker) {
+                datePicker.showPicker();
+            } else {
+                datePicker.click();
+            }
+        });
+
+        datePicker.addEventListener('change', (e) => {
+            if(e.target.value) {
+                targetDate = e.target.value;
+                localStorage.setItem('ceylinTargetDate', targetDate);
+                updateUI();
+            }
+        });
+
+        let timerInterval;
+
+        function updateUI() {
+            const now = new Date();
+            const target = new Date(targetDate);
+            target.setHours(0,0,0,0);
+            
+            const diffTime = target - now;
+            const container = document.getElementById('countdown-container');
+
+            if (diffTime <= 0) {
+                container.innerHTML = '<div class="time-box"><div class="time-val" style="font-size:30px;">HOŞ GELDİN CEYLİN!</div></div>';
+                return;
+            }
+
+            const secs = Math.floor((diffTime / 1000) % 60);
+            const mins = Math.floor((diffTime / 1000 / 60) % 60);
+            const hours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            const months = Math.floor(totalDays / 30);
+            const days = totalDays % 30;
+
+            let html = '';
+            if (months > 0) {
+                html += '<div class="time-box"><div class="time-val">' + months + '</div><div class="time-lbl">AY</div></div>';
+            }
+            html += '<div class="time-box"><div class="time-val">' + days + '</div><div class="time-lbl">GÜN</div></div>';
+            html += '<div class="time-box"><div class="time-val">' + hours.toString().padStart(2, '0') + '</div><div class="time-lbl">SAAT</div></div>';
+            html += '<div class="time-box"><div class="time-val">' + mins.toString().padStart(2, '0') + '</div><div class="time-lbl">DK</div></div>';
+            html += '<div class="time-box"><div class="time-val">' + secs.toString().padStart(2, '0') + '</div><div class="time-lbl">SN</div></div>';
+
+            container.innerHTML = html;
+
+            const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const quoteIndex = dayOfYear % quotes.length;
+            document.getElementById('quote-text').innerText = '"' + quotes[quoteIndex] + '"';
+        }
+
+        updateUI();
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateUI, 1000);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => {
+                    console.log('SW registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
