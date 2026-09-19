@@ -1,0 +1,16 @@
+{
+  "name": "Ceylin Bebek",
+  "short_name": "Ceylin",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#E91E63",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
