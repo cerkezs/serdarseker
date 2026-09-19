@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Ceylin Bebek</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E91E63">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            width: 100vw; height: 100vh; 
+            background: url('background.png') no-repeat center center fixed; 
+            background-size: cover; 
+            color: white; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; overflow: hidden;
+        }
+        .overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); z-index: 1;
+        }
+        .content {
+            position: relative; z-index: 2; padding: 20px; display: flex; flex-direction: column; align-items: center; width: 100%;
+        }
+        h1 { font-size: 28px; font-weight: bold; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .countdown { margin-bottom: 20px; }
+        .days { font-size: 100px; font-weight: 900; line-height: 1; text-shadow: 3px 3px 6px rgba(0,0,0,0.5); }
+        .label { font-size: 24px; font-weight: 500; letter-spacing: 2px; }
+        .quote { font-size: 20px; font-style: italic; margin-top: 40px; margin-bottom: 40px; padding: 0 20px; line-height: 1.4; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+        .btn {
+            background-color: #E91E63; color: white; border: none; padding: 15px 30px; 
+            font-size: 18px; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        input[type="date"] {
+            position: absolute; opacity: 0; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="content">
+        <h1>Ceylin Bebek İçin Geri Sayım</h1>
+        
+        <div class="countdown" id="countdown-box">
+            <div class="days" id="days-val">--</div>
+            <div class="label" id="days-label">GÜN KALDI</div>
+        </div>
+
+        <div class="quote" id="quote-text">
+            "Hoş geldin dünyaya, meleklerin duası seninle olsun."
+        </div>
+
+        <button class="btn" id="change-date-btn">Tarihi Değiştir</button>
+        <input type="date" id="date-picker">
+    </div>
+
+    <script>
+        const quotes = [
+            "Allah'ım, bu yavruyu İslam fıtratı üzere yaşat.",
+            "Bebekler dünyanın en güzel armağanıdır.",
+            "Rabbim, onu salih/saliha kullarından eyle.",
+            "Göz aydınlığı bir nesil nasip et Allah'ım.",
+            "Hoş geldin dünyaya, meleklerin duası seninle olsun.",
+            "Allah'ım onu her türlü kötülükten koru.",
+            "Rabbim, anne babasına hayırlı bir evlat eyle."
+        ];
+
+        let targetDate = localStorage.getItem('ceylinTargetDate');
+        if (!targetDate) {
+            let d = new Date();
+            d.setDate(d.getDate() + 45);
+            targetDate = d.toISOString().split('T')[0];
+            localStorage.setItem('ceylinTargetDate', targetDate);
+        }
+
+        const datePicker = document.getElementById('date-picker');
+        datePicker.value = targetDate;
+
+        document.getElementById('change-date-btn').addEventListener('click', () => {
+            if(datePicker.showPicker) {
+                datePicker.showPicker();
+            } else {
+                datePicker.click();
+            }
+        });
+
+        datePicker.addEventListener('change', (e) => {
+            if(e.target.value) {
+                targetDate = e.target.value;
+                localStorage.setItem('ceylinTargetDate', targetDate);
+                updateUI();
+            }
+        });
+
+        function updateUI() {
+            const now = new Date();
+            const target = new Date(targetDate);
+            now.setHours(0,0,0,0);
+            target.setHours(0,0,0,0);
+            
+            const diffTime = target - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            const daysVal = document.getElementById('days-val');
+            const daysLabel = document.getElementById('days-label');
+
+            if (diffDays > 0) {
+                daysVal.innerText = diffDays;
+                daysLabel.innerText = "GÜN KALDI";
+            } else if (diffDays === 0) {
+                daysVal.innerText = "BÜYÜK";
+                daysLabel.innerText = "GÜN!";
+            } else {
+                daysVal.innerText = "HOŞ";
+                daysLabel.innerText = "GELDİN!";
+            }
+
+            const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const quoteIndex = dayOfYear % quotes.length;
+            document.getElementById('quote-text').innerText = '"' + quotes[quoteIndex] + '"';
+        }
+
+        updateUI();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => {
+                    console.log('SW registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
