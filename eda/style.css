@@ -1,0 +1,618 @@
+:root {
+  --primary-pink: #ff6b8b;
+  --primary-purple: #9b51e0;
+  --soft-pink: #ffeef2;
+  --accent-gold: #ffd166;
+  --bg-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(255, 255, 255, 0.6);
+  --text-dark: #2d3748;
+  --text-muted: #718096;
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed; /* Mobilde istemsiz kaydırmaları engeller */
+}
+
+body {
+  font-family: 'Comfortaa', 'Nunito', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-gradient);
+  color: var(--text-dark);
+}
+
+/* Arka plan kalpleri */
+#floating-hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none !important;
+  z-index: 1;
+}
+
+.floating-heart {
+  position: absolute;
+  bottom: -30px;
+  animation: floatUp 8s linear infinite;
+  opacity: 0.5;
+  pointer-events: none !important;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+  20% { opacity: 0.5; }
+  80% { opacity: 0.7; }
+  100% { transform: translateY(-110vh) rotate(360deg) scale(1.2); opacity: 0; }
+}
+
+/* Müzik Toggle Butonu */
+.music-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.7);
+}
+
+.music-icon {
+  font-size: 1.1rem;
+}
+
+.music-waves {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.music-waves span {
+  width: 3px;
+  height: 100%;
+  background: var(--primary-pink);
+  border-radius: 2px;
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+.music-waves span:nth-child(2) { animation-delay: 0.2s; }
+.music-waves span:nth-child(3) { animation-delay: 0.4s; }
+
+.music-paused .music-waves span {
+  animation: none;
+  height: 3px;
+}
+
+@keyframes wave {
+  0%, 100% { height: 3px; }
+  50% { height: 12px; }
+}
+
+/* Ana Konteyner - Ekrana Tam Oturma */
+.game-container {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  max-height: 100dvh;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Ekranlar */
+.screen {
+  position: absolute;
+  inset: 12px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.screen.active {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* Cam Kart */
+.glass-card {
+  width: 100%;
+  max-height: 94vh;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 20px 16px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow-y: auto;
+}
+
+/* Rozetler ve Başlıklar */
+.sparkle-badge, .final-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #fff0f5, #ffe4e9);
+  color: var(--primary-pink);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 107, 139, 0.2);
+}
+
+.romantic-title {
+  font-family: 'Pacifico', cursive;
+  font-size: 1.8rem;
+  color: var(--primary-pink);
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.sub-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-bottom: 20px;
+}
+
+/* Butonlar */
+.primary-btn {
+  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1.05rem;
+  font-family: 'Comfortaa', sans-serif;
+  font-weight: 700;
+  border-radius: 26px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 117, 140, 0.4);
+  touch-action: manipulation;
+}
+
+.primary-btn:active {
+  transform: scale(0.96);
+}
+
+.pulse-anim {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* Oyun Kartı İç Bölümleri */
+.game-card {
+  height: 92vh;
+  justify-content: space-between;
+  padding: 16px 14px;
+}
+
+.game-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(255, 107, 139, 0.25);
+}
+
+.level-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary-pink);
+  background: #fff;
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+.collected-words-bar {
+  display: flex;
+  gap: 3px;
+}
+
+.word-slot {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #f0f3f8;
+  color: #a0aec0;
+  padding: 2px 5px;
+  border-radius: 5px;
+  max-width: 65px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.word-slot.unlocked {
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: white;
+}
+
+.game-instruction {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 6px 0;
+}
+
+/* Oyun Sahnesi Alanı - Ekran Yüksekliğine Göre Dinamik */
+.game-play-area {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  max-height: 55vh;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 18px;
+  border: 2px dashed rgba(255, 107, 139, 0.3);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: none;
+}
+
+/* Alt İlerleme */
+.game-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.level-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.level-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff758c, #9b51e0);
+  border-radius: 4px;
+  transition: width 0.25s ease;
+}
+
+.level-status-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* 1. MİNİ OYUN: BALONLAR */
+.balloon {
+  position: absolute;
+  width: 56px;
+  height: 70px;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  box-shadow: inset -4px -4px 10px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
+  touch-action: manipulation;
+  z-index: 20;
+}
+
+.balloon::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 6px solid currentColor;
+}
+
+.balloon.popping {
+  transform: scale(1.4);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 2. MİNİ OYUN: HAFIZA */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 92%;
+  height: 90%;
+  padding: 6px;
+}
+
+.memory-card {
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  border: 2px solid #ffe4e9;
+  touch-action: manipulation;
+  z-index: 20;
+}
+
+.memory-card.hidden-card {
+  background: linear-gradient(135deg, #ffb199 0%, #ff0844 100%);
+  color: transparent;
+}
+
+.memory-card.hidden-card::after {
+  content: "✨";
+  font-size: 1.4rem;
+  color: white;
+}
+
+.memory-card.matched {
+  background: #e6fffa;
+  border-color: #38b2ac;
+}
+
+/* 3. MİNİ OYUN: SEPET */
+.basket {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  width: 66px;
+  height: 42px;
+  background: #fff;
+  border: 3px solid #ff6b8b;
+  border-radius: 0 0 20px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 12px rgba(255, 107, 139, 0.3);
+  touch-action: none;
+  z-index: 20;
+}
+
+.falling-item {
+  position: absolute;
+  font-size: 1.6rem;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* 4. MİNİ OYUN: KÖSTEBEK / PATİ */
+.mole-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 90%;
+}
+
+.mole-hole {
+  height: 72px;
+  background: #fed7e2;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #fbb6ce;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.mole-character {
+  font-size: 2.2rem;
+  position: absolute;
+  bottom: -60px;
+  transition: bottom 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  touch-action: manipulation;
+  z-index: 25;
+}
+
+.mole-hole.active .mole-character {
+  bottom: 6px;
+}
+
+/* 5. MİNİ OYUN: KALBİ SÜRÜKLEME */
+.maze-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.maze-track {
+  position: absolute;
+  top: 25px;
+  bottom: 25px;
+  width: 14px;
+  background: #ffd6e0;
+  border-radius: 7px;
+}
+
+.draggable-heart {
+  position: absolute;
+  top: 20px;
+  width: 56px;
+  height: 56px;
+  background: #ff477e;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  cursor: grab;
+  touch-action: none;
+  z-index: 30;
+}
+
+.target-star {
+  position: absolute;
+  bottom: 15px;
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border: 3px dashed #ffd166;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+}
+
+/* KAZIMA EKRANI */
+.scratch-box-container {
+  position: relative;
+  width: 260px;
+  height: 130px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border: 3px solid #fff;
+  margin: 16px 0 20px;
+}
+
+.secret-word-underneath {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #fff0f5, #ffe4e9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary-pink);
+  font-family: 'Pacifico', cursive;
+  z-index: 1;
+}
+
+#scratchCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  touch-action: none;
+  cursor: pointer;
+}
+
+/* FİNAL EKRANI */
+.final-card {
+  padding: 24px 16px;
+  height: auto;
+  max-height: 90vh;
+}
+
+.final-sentence-box {
+  background: linear-gradient(135deg, #fff5f7, #ffffff);
+  border: 2px solid #ffe0e6;
+  border-radius: 18px;
+  padding: 18px 14px;
+  margin: 16px 0 24px;
+}
+
+.final-sentence {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #d6336c;
+  line-height: 1.45;
+}
+
+.final-buttons-container {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.choice-btn {
+  padding: 12px 30px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: 'Comfortaa', sans-serif;
+  border-radius: 26px;
+  cursor: pointer;
+  border: none;
+  touch-action: manipulation;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #ff477e 0%, #ff5c8a 100%);
+  color: white;
+  box-shadow: 0 6px 18px rgba(255, 71, 126, 0.4);
+}
+
+.no-btn {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  position: absolute;
+  right: calc(50% - 110px);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: none;
+}
+
+.success-text {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ff3366;
+  margin-bottom: 6px;
+  font-family: 'Pacifico', cursive;
+}
+
+.hidden {
+  display: none !important;
+}
