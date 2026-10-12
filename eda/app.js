@@ -754,20 +754,23 @@ function setupFlappyGame(config) {
       ctx.fillRect(p.x, p.bottom, 42, canvas.height - p.bottom);
       ctx.fillText("☁️", p.x + 21, p.bottom + 25);
 
-      // Çarpışma Kutusu Kontrolü (Hitbox)
+      // Çarpışma Kutusu Kontrolü (Hassas ve Gerçekçi Hitbox)
       const birdX = 60;
-      const birdRadius = 13;
+      const birdRadius = 14;
+      let hasHitThisPipe = false;
+
       if (
-        birdX + birdRadius > p.x &&
-        birdX - birdRadius < p.x + 42
+        birdX + birdRadius >= p.x &&
+        birdX - birdRadius <= p.x + 42
       ) {
-        if (birdY - birdRadius < p.top || birdY + birdRadius > p.bottom) {
+        if (birdY - birdRadius <= p.top || birdY + birdRadius >= p.bottom) {
+          hasHitThisPipe = true;
           triggerHit();
         }
       }
 
-      // Başarılı geçiş
-      if (!p.passed && p.x + 42 < birdX) {
+      // Sadece çarpmadıysa ve oyun devam ediyorsa başarılı geçiş say
+      if (!isGameOver && !hasHitThisPipe && !p.passed && p.x + 42 < birdX) {
         p.passed = true;
         passedClouds++;
         updateGameProgress(passedClouds, config.targetScore);
