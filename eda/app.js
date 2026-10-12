@@ -89,8 +89,8 @@ const GAMES_CONFIG = {
   },
   flappy: {
     title: "Uçan Kalp 🕊️",
-    instruction: "Ekrana dokunarak kalbi 4 buluttan geçir!",
-    targetScore: 4,
+    instruction: "Ekrana dokunarak kalbi 20 buluttan geçir!",
+    targetScore: 20,
     rewardPoints: 20
   },
   piano: {
