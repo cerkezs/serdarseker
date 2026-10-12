@@ -434,6 +434,8 @@ window.unlockQuestion = function(questionId) {
   if (!item || userState.points < item.cost) return;
 
   if (!userState.unlockedQuestions.includes(questionId)) {
+    // Puandan düş
+    userState.points -= item.cost;
     userState.unlockedQuestions.push(questionId);
     saveState();
     renderQuestions();
@@ -442,7 +444,8 @@ window.unlockQuestion = function(questionId) {
     sendTelegramLog(
       `🔓 <b>Edanur Bir Sorunun Kilidini Açtı!</b>\n` +
       `❓ <b>Soru ${item.id}:</b> <i>"${item.q}"</i>\n` +
-      `⭐ <b>Toplam Puan:</b> ${userState.points}`
+      `➖ Harcanan: <b>-${item.cost} ⭐</b>\n` +
+      `⭐ <b>Kalan Puan:</b> ${userState.points}`
     );
   }
 };
