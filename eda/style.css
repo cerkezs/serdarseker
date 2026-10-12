@@ -1037,3 +1037,119 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* RENK TUZAĞI (STROOP) STİLLERİ */
+.color-game-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 12px;
+}
+
+.color-timer-bar {
+  width: 100%;
+  height: 10px;
+  background: #edf2f7;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.color-timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff477e, #f56565);
+  width: 100%;
+}
+
+.color-word-display {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: auto 0;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Comfortaa', sans-serif;
+}
+
+.color-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.color-btn {
+  border: none;
+  border-radius: 14px;
+  color: white;
+  padding: 14px 8px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-family: 'Comfortaa', sans-serif;
+  transition: transform 0.1s;
+}
+
+.color-btn:active {
+  transform: scale(0.95);
+}
+
+/* SAYI SIRALAMA STİLLERİ */
+.numbers-game-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+}
+
+.numbers-timer-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #e53e3e;
+}
+
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin: auto 0;
+}
+
+.number-cell {
+  aspect-ratio: 1;
+  background: white;
+  border: 2px solid #ffccd5;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #d6336c;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  touch-action: manipulation;
+}
+
+.number-cell.pressed {
+  background: #c6f6d5;
+  border-color: #38a169;
+  color: #22543d;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* DÖNEN HEDEF İĞNE STİLLERİ */
+.pin-canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}

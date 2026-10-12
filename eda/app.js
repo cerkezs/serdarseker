@@ -122,6 +122,24 @@ const GAMES_CONFIG = {
     instruction: "Çarkı çevir ve sürpriz yıldızları kap!",
     targetScore: 1,
     rewardPoints: 20
+  },
+  color: {
+    title: "Renk Tuzağı 🧠",
+    instruction: "Kelimenin anlamına değil, yazıldığı renge bas! (15 Seri Yap!)",
+    targetScore: 15,
+    rewardPoints: 20
+  },
+  numbers: {
+    title: "Sayı Avı 🔢",
+    instruction: "12 saniyede 1'den 16'ya kadar sırayla bas!",
+    targetScore: 16,
+    rewardPoints: 20
+  },
+  pin: {
+    title: "Dönen Hedef 🎯",
+    instruction: "12 iğneyi birbirine çarptırmadan hedefe sapla!",
+    targetScore: 12,
+    rewardPoints: 20
   }
 };
 
@@ -568,6 +586,9 @@ window.openGame = function(gameKey) {
       case "catch": setupCatchGame(config); break;
       case "mole": setupMoleGame(config); break;
       case "wheel": setupWheelGame(config); break;
+      case "color": setupColorGame(config); break;
+      case "numbers": setupNumbersGame(config); break;
+      case "pin": setupPinGame(config); break;
     }
   }, 60);
 };
@@ -1244,56 +1265,331 @@ function setupMoleGame(config) {
   popup();
 }
 
-function setupMazeGame(config) {
-  const cont = document.createElement("div");
-  cont.className = "maze-container";
-  const tr = document.createElement("div");
-  tr.className = "maze-track";
-  const heart = document.createElement("div");
-  heart.className = "draggable-heart";
-  heart.textContent = "💖";
-  const star = document.createElement("div");
-  star.className = "target-star";
-  star.textContent = "🌟";
+/* --- YENİ OYUN 5: RENK TUZAĞI (STROOP REFLEKS) --- */
+function setupColorGame(config) {
+  const container = document.createElement("div");
+  container.className = "color-game-container";
 
-  cont.appendChild(tr);
-  cont.appendChild(heart);
-  cont.appendChild(star);
-  modalPlayArea.appendChild(cont);
+  const timerBar = document.createElement("div");
+  timerBar.className = "color-timer-bar";
+  const timerFill = document.createElement("div");
+  timerFill.className = "color-timer-fill";
+  timerBar.appendChild(timerFill);
 
-  let isDragging = false;
-  let startY = 0;
+  const wordDisplay = document.createElement("div");
+  wordDisplay.className = "color-word-display";
 
-  const onStart = (e) => {
-    isDragging = true;
-    startY = e.touches ? e.touches[0].clientY : e.clientY;
-  };
+  const buttonsGrid = document.createElement("div");
+  buttonsGrid.className = "color-buttons-grid";
 
-  const onMove = (e) => {
-    if (!isDragging) return;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const deltaY = clientY - startY;
-    let newTop = Math.max(20, 20 + deltaY);
-    const maxTop = modalPlayArea.clientHeight - 85;
+  container.appendChild(timerBar);
+  container.appendChild(wordDisplay);
+  container.appendChild(buttonsGrid);
+  modalPlayArea.appendChild(container);
 
-    heart.style.top = Math.min(newTop, maxTop) + "px";
-    if (newTop >= maxTop - 15) {
-      isDragging = false;
-      heart.style.top = maxTop + "px";
-      updateGameProgress(1, config.targetScore);
+  const colors = [
+    { name: "KIRMIZI", color: "#e53e3e" },
+    { name: "MAVİ", color: "#3182ce" },
+    { name: "YEŞİL", color: "#38a169" },
+    { name: "SARI", color: "#d69e2e" },
+    { name: "PEMBE", color: "#d53f8c" }
+  ];
+
+  colors.forEach(c => {
+    const btn = document.createElement("button");
+    btn.className = "color-btn";
+    btn.style.backgroundColor = c.color;
+    btn.textContent = c.name;
+    btn.addEventListener("click", () => handleAnswer(c.color));
+    buttonsGrid.appendChild(btn);
+  });
+
+  let currentStreak = 0;
+  let targetColorHex = "";
+  let questionTimeout = null;
+  let animTimer = null;
+  let isGameOver = false;
+
+  function resetGame() {
+    clearTimeout(questionTimeout);
+    clearInterval(animTimer);
+    currentStreak = 0;
+    isGameOver = false;
+    updateGameProgress(0, config.targetScore);
+    nextQuestion();
+  }
+
+  function triggerFail(reason) {
+    if (isGameOver) return;
+    isGameOver = true;
+    clearTimeout(questionTimeout);
+    clearInterval(animTimer);
+
+    modalInstruction.textContent = reason;
+    modalInstruction.style.color = "#e53e3e";
+
+    setTimeout(() => {
+      modalInstruction.textContent = config.instruction;
+      modalInstruction.style.color = "";
+      resetGame();
+    }, 800);
+  }
+
+  function nextQuestion() {
+    if (isGameOver) return;
+    if (currentStreak >= config.targetScore) return;
+
+    // Kelimenin anlamı ile rengini farklı yap
+    const textObj = colors[Math.floor(Math.random() * colors.length)];
+    let colorObj = colors[Math.floor(Math.random() * colors.length)];
+    while (colorObj.color === textObj.color && colors.length > 1) {
+      colorObj = colors[Math.floor(Math.random() * colors.length)];
     }
-  };
 
-  const onEnd = () => {
-    if (isDragging) {
-      isDragging = false;
-      heart.style.top = "20px";
+    wordDisplay.textContent = textObj.name;
+    wordDisplay.style.color = colorObj.color;
+    targetColorHex = colorObj.color;
+
+    // Zamanlayıcıyı başlat (1.8 saniye)
+    timerFill.style.transition = "none";
+    timerFill.style.width = "100%";
+    setTimeout(() => {
+      timerFill.style.transition = "width 1.8s linear";
+      timerFill.style.width = "0%";
+    }, 20);
+
+    clearTimeout(questionTimeout);
+    questionTimeout = setTimeout(() => {
+      triggerFail("Süre doldu! 💥 Puanlar sıfırlandı!");
+    }, 1800);
+  }
+
+  function handleAnswer(chosenColor) {
+    if (isGameOver) return;
+    clearTimeout(questionTimeout);
+
+    if (chosenColor === targetColorHex) {
+      currentStreak++;
+      updateGameProgress(currentStreak, config.targetScore);
+      if (currentStreak < config.targetScore) {
+        nextQuestion();
+      }
+    } else {
+      triggerFail("Rengi yanlış seçtin! 💥 Yazıya değil, renge odaklan!");
     }
-  };
+  }
 
-  heart.addEventListener("pointerdown", onStart);
-  window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onEnd);
+  resetGame();
+}
+
+/* --- YENİ OYUN 6: HIZLI SAYI SIRALAMA (1'DEN 16'YA) --- */
+function setupNumbersGame(config) {
+  const container = document.createElement("div");
+  container.className = "numbers-game-container";
+
+  const timerText = document.createElement("div");
+  timerText.className = "numbers-timer-text";
+  timerText.textContent = "Kalan Süre: 12.0s";
+
+  const grid = document.createElement("div");
+  grid.className = "numbers-grid";
+
+  container.appendChild(timerText);
+  container.appendChild(grid);
+  modalPlayArea.appendChild(container);
+
+  let expectedNumber = 1;
+  let timeLeft = 12.0;
+  let countdownTimer = null;
+  let isGameOver = false;
+
+  function resetGame() {
+    clearInterval(countdownTimer);
+    expectedNumber = 1;
+    timeLeft = 12.0;
+    isGameOver = false;
+    updateGameProgress(0, config.targetScore);
+    grid.innerHTML = "";
+
+    const numbers = Array.from({ length: 16 }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+    numbers.forEach(num => {
+      const cell = document.createElement("div");
+      cell.className = "number-cell";
+      cell.textContent = num;
+      cell.dataset.num = num;
+
+      cell.addEventListener("pointerdown", () => {
+        if (isGameOver) return;
+        if (parseInt(cell.dataset.num) === expectedNumber) {
+          cell.classList.add("pressed");
+          expectedNumber++;
+          updateGameProgress(expectedNumber - 1, config.targetScore);
+          if (expectedNumber > 16) {
+            clearInterval(countdownTimer);
+          }
+        } else {
+          triggerFail(`Yanlış sayı! 💥 Sıradaki sayı: ${expectedNumber}`);
+        }
+      });
+      grid.appendChild(cell);
+    });
+
+    countdownTimer = setInterval(() => {
+      timeLeft -= 0.1;
+      timerText.textContent = `Kalan Süre: ${Math.max(0, timeLeft).toFixed(1)}s`;
+      if (timeLeft <= 0) {
+        clearInterval(countdownTimer);
+        triggerFail("Zaman bitti! 💥 12 saniyede bitirmelisin!");
+      }
+    }, 100);
+    gameIntervals.push(countdownTimer);
+  }
+
+  function triggerFail(reason) {
+    if (isGameOver) return;
+    isGameOver = true;
+    clearInterval(countdownTimer);
+
+    modalInstruction.textContent = reason;
+    modalInstruction.style.color = "#e53e3e";
+
+    setTimeout(() => {
+      modalInstruction.textContent = config.instruction;
+      modalInstruction.style.color = "";
+      resetGame();
+    }, 800);
+  }
+
+  resetGame();
+}
+
+/* --- YENİ OYUN 7: DÖNEN HEDEF / İĞNE BATIRMA (KNIFE PIN) --- */
+function setupPinGame(config) {
+  const canvas = document.createElement("canvas");
+  canvas.className = "pin-canvas";
+  modalPlayArea.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+  canvas.width = modalPlayArea.clientWidth;
+  canvas.height = modalPlayArea.clientHeight;
+
+  const targetRadius = 45;
+  const targetX = canvas.width / 2;
+  const targetY = canvas.height * 0.35;
+  const pinLength = 70;
+
+  let currentAngle = 0;
+  let rotationSpeed = 0.035;
+  let pins = []; // [angle1, angle2...]
+  let pinnedCount = 0;
+  let isGameOver = false;
+
+  function resetGame() {
+    pinnedCount = 0;
+    pins = [];
+    isGameOver = false;
+    currentAngle = 0;
+    updateGameProgress(0, config.targetScore);
+  }
+
+  function triggerFail() {
+    if (isGameOver) return;
+    isGameOver = true;
+
+    modalInstruction.textContent = "İğneler birbirine çarptı! 💥 Baştan başlıyor...";
+    modalInstruction.style.color = "#e53e3e";
+
+    setTimeout(() => {
+      modalInstruction.textContent = config.instruction;
+      modalInstruction.style.color = "";
+      resetGame();
+    }, 800);
+  }
+
+  const loop = setInterval(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!isGameOver) {
+      currentAngle += rotationSpeed;
+    }
+
+    // Ortadaki Dönen Hedef Çember
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, targetRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff477e";
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 16px 'Comfortaa', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`${12 - pinnedCount}`, targetX, targetY);
+
+    // Saplanmış İğneleri Çiz
+    pins.forEach(angle => {
+      const rad = angle + currentAngle;
+      const startX = targetX + Math.cos(rad) * targetRadius;
+      const startY = targetY + Math.sin(rad) * targetRadius;
+      const endX = targetX + Math.cos(rad) * (targetRadius + pinLength);
+      const endY = targetY + Math.sin(rad) * (targetRadius + pinLength);
+
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = "#4a5568";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(endX, endY, 6, 0, Math.PI * 2);
+      ctx.fillStyle = "#ff758c";
+      ctx.fill();
+    });
+
+    // Fırlatılmaya hazır aşağıdaki iğne
+    const readyY = canvas.height * 0.82;
+    ctx.beginPath();
+    ctx.moveTo(targetX, readyY);
+    ctx.lineTo(targetX, readyY - pinLength);
+    ctx.strokeStyle = "#4a5568";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(targetX, readyY, 6, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff477e";
+    ctx.fill();
+  }, 1000 / 60);
+
+  gameIntervals.push(loop);
+
+  function shootPin() {
+    if (isGameOver || pinnedCount >= config.targetScore) return;
+
+    // Yeni iğne saat 6 yönünde (Math.PI / 2) saplanır
+    const pinAngle = Math.PI / 2 - currentAngle;
+
+    // Çarpışma kontrolü (Diğer iğnelerle açı farkı çok yakınsa)
+    const minDistanceRad = 0.22; // ~13 derece mesafe
+    for (let a of pins) {
+      let diff = Math.abs((a - pinAngle) % (Math.PI * 2));
+      if (diff > Math.PI) diff = Math.PI * 2 - diff;
+      if (diff < minDistanceRad) {
+        triggerFail();
+        return;
+      }
+    }
+
+    pins.push(pinAngle);
+    pinnedCount++;
+    updateGameProgress(pinnedCount, config.targetScore);
+
+    // Her 3 iğnede bir yön ve hız değişsin (Zorluk artsın!)
+    if (pinnedCount % 3 === 0) {
+      rotationSpeed = (rotationSpeed > 0 ? -1 : 1) * (0.038 + Math.random() * 0.02);
+    }
+  }
+
+  canvas.addEventListener("pointerdown", shootPin);
+  resetGame();
 }
 
 /* --- ÖZEL MOD: İLK 5 BÖLÜM VE KAÇAN HAYIR BUTONU FİNALİ --- */
