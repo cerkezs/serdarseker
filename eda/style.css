@@ -1455,3 +1455,112 @@ body {
   font-size: 1rem;
   margin-bottom: 24px;
 }
+
+/* KÜSTÜK MÜ? MODAL STİLLERİ */
+.kustuk-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 10001 !important; /* En üstte durması için */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.kustuk-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.kustuk-card {
+  background: white;
+  border-radius: 24px;
+  padding: 28px 22px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.kustuk-icon {
+  font-size: 3.2rem;
+  margin-bottom: 8px;
+  animation: heartbeat 2s infinite ease-in-out;
+}
+
+.kustuk-card h2 {
+  font-family: 'Pacifico', cursive;
+  color: #e53e3e;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.kustuk-desc {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.kustuk-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid #fed7e2;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #2d3748;
+  outline: none;
+  background: #fff5f7;
+  resize: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  margin-bottom: 14px;
+  user-select: text;
+}
+
+.kustuk-textarea:focus {
+  border-color: #ff6b8b;
+  background: white;
+}
+
+.kustuk-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.kustuk-confirm-text {
+  font-size: 1.05rem;
+  color: #c53030;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.kustuk-confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kustuk-back-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+  background: #edf2f7;
+  color: #4a5568;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+

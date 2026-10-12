@@ -2211,10 +2211,80 @@ function stopChallengeGame() {
   if (duelTapArena) duelTapArena.innerHTML = "";
 }
 
+/* --- KÜSTÜK MÜ? ÖZEL POPUP MANTIĞI --- */
+function checkKustukPopup() {
+  // Eğer daha önce cevap verdiyse bir daha ASLA çıkmasın
+  const alreadyAnswered = localStorage.getItem("eda_kustuk_answered");
+  if (alreadyAnswered) return;
+
+  const kustukModal = document.getElementById("kustukModal");
+  const kustukFormArea = document.getElementById("kustukFormArea");
+  const kustukConfirmArea = document.getElementById("kustukConfirmArea");
+  const kustukSuccessArea = document.getElementById("kustukSuccessArea");
+  const kustukAnswerInput = document.getElementById("kustukAnswerInput");
+  const kustukSubmitBtn = document.getElementById("kustukSubmitBtn");
+  const kustukFinalYesBtn = document.getElementById("kustukFinalYesBtn");
+  const kustukFinalNoBtn = document.getElementById("kustukFinalNoBtn");
+
+  if (!kustukModal) return;
+
+  // Popup'ı aç (kapatma butonu yok ve dışarı basınca kapanmaz)
+  kustukModal.classList.add("active");
+
+  // 1. Gönder Butonuna Basıldığında (Doğrulama ve "Emin misin?" Ekranı)
+  kustukSubmitBtn.addEventListener("click", () => {
+    const text = (kustukAnswerInput.value || "").trim();
+    if (!text) {
+      alert("Lütfen bir şeyler yazmadan geçme... 🥺");
+      kustukAnswerInput.focus();
+      return;
+    }
+    // "Emin misin?" alanını göster
+    kustukFormArea.classList.add("hidden");
+    kustukConfirmArea.classList.remove("hidden");
+  });
+
+  // 2. "Düzenle" derse geri dön
+  kustukFinalNoBtn.addEventListener("click", () => {
+    kustukConfirmArea.classList.add("hidden");
+    kustukFormArea.classList.remove("hidden");
+    kustukAnswerInput.focus();
+  });
+
+  // 3. "Evet, Gönder" derse Telegram'a at ve kapat
+  kustukFinalYesBtn.addEventListener("click", () => {
+    const text = (kustukAnswerInput.value || "").trim();
+    const myName = (currentUsername || "Edanur").trim();
+    const now = new Date().toLocaleString("tr-TR");
+
+    // Telegram Bildirimi Gönder
+    sendTelegramLog(
+      `🥺💔 <b>"KÜSTÜK MÜ?" SORUSUNA CEVAP GELDİ!</b>\n\n` +
+      `👤 <b>Gönderen:</b> ${myName}\n` +
+      `✍️ <b>Cevap:</b> <i>"${text}"</i>\n` +
+      `⏰ <b>Zaman:</b> ${now}`
+    );
+
+    // Bir daha çıkmaması için kaydet
+    localStorage.setItem("eda_kustuk_answered", "true");
+
+    // Başarı ekranı: Sadece "Gönderildi ✨"
+    kustukConfirmArea.classList.add("hidden");
+    kustukSuccessArea.classList.remove("hidden");
+
+    confetti({ particleCount: 40, spread: 60 });
+
+    setTimeout(() => {
+      kustukModal.classList.remove("active");
+    }, 1600);
+  });
+}
+
 /* --- BAŞLATMA --- */
 window.addEventListener("DOMContentLoaded", () => {
   loadState();
   renderQuestions();
   createFloatingHearts();
   checkUserGreeting();
+  checkKustukPopup();
 });

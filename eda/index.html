@@ -315,6 +315,31 @@
         </div>
       </div>
     </div>
+  <!-- KÜSTÜK MÜ? ÖZEL POPUP MODALI -->
+  <div class="kustuk-modal" id="kustukModal">
+    <div class="kustuk-card">
+      <div class="kustuk-icon">🥺💔</div>
+      <h2>Küstük mü?</h2>
+      <p class="kustuk-desc">Bana karşı kırgın mısın ya da küstük mü? Gerçekten bilmek istiyorum...</p>
+      
+      <div id="kustukFormArea">
+        <textarea id="kustukAnswerInput" class="kustuk-textarea" rows="4" placeholder="İçinden ne geliyorsa buraya yaz..."></textarea>
+        <button class="primary-btn kustuk-btn" id="kustukSubmitBtn">Gönder 💌</button>
+      </div>
+
+      <div id="kustukConfirmArea" class="hidden">
+        <p class="kustuk-confirm-text">Son kararın mı? Göndermek istediğine emin misin? 🥺</p>
+        <div class="kustuk-confirm-actions">
+          <button class="primary-btn kustuk-btn" id="kustukFinalYesBtn">Evet, Gönder ✨</button>
+          <button class="modal-back-btn kustuk-back-btn" id="kustukFinalNoBtn">Düzenle ✍️</button>
+        </div>
+      </div>
+
+      <div id="kustukSuccessArea" class="hidden">
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">✨</div>
+        <h3 style="color: #2e7d32; font-weight: 800;">Gönderildi ✨</h3>
+      </div>
+    </div>
   </div>
 
   <!-- KULLANICI KARŞILAMA / AD GİRİŞİ MODALI -->
@@ -381,6 +406,6 @@
 
   <!-- Konfeti Kütüphanesi -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="app.js?v=6.0"></script>
+  <script src="app.js?v=7.0"></script>
 </body>
 </html>
