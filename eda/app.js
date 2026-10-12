@@ -158,9 +158,12 @@ function saveState() {
 function pollTelegramReplies() {
   const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/getUpdates?offset=${lastTgUpdateId + 1}&timeout=5`;
   fetch(url)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) return null;
+      return res.json();
+    })
     .then(data => {
-      if (data && data.ok && data.result.length > 0) {
+      if (data && data.ok && data.result && data.result.length > 0) {
         data.result.forEach(update => {
           lastTgUpdateId = update.update_id;
           const msg = update.message;
@@ -498,6 +501,36 @@ let gameIntervals = []; // Tüm interval'leri topluca temizlemek için dizi
 function clearAllGameIntervals() {
   gameIntervals.forEach(id => clearInterval(id));
   gameIntervals = [];
+}
+
+function updateGameProgress(score, target) {
+  currentGameScore = score;
+  const pct = Math.min(100, Math.round((currentGameScore / target) * 100));
+  if (modalProgressFill) modalProgressFill.style.width = pct + "%";
+  if (modalScore) modalScore.textContent = `${currentGameScore} / ${target}`;
+
+  if (currentGameScore >= target) {
+    setTimeout(() => {
+      finishGameSuccess(GAMES_CONFIG[currentGameKey]);
+    }, 350);
+  }
+}
+
+function finishGameSuccess(config) {
+  clearAllGameIntervals();
+  confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+  addPoints(config.rewardPoints, config.title);
+
+  modalPlayArea.innerHTML = `
+    <div style="text-align:center; padding:20px;">
+      <div style="font-size:3rem; margin-bottom:10px;">🎉</div>
+      <h3 style="color:#d6336c; margin-bottom:8px;">Harikasın Edanur!</h3>
+      <p style="font-size:0.95rem; color:#4a5568; margin-bottom:16px;">
+        Tebrikler! <strong>+${config.rewardPoints} ⭐ Puan</strong> kazandın.
+      </p>
+      <button class="primary-btn" onclick="closeGame()">Devam Et ✨</button>
+    </div>
+  `;
 }
 
 window.openGame = function(gameKey) {
