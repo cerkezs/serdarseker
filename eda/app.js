@@ -95,8 +95,8 @@ const GAMES_CONFIG = {
   },
   piano: {
     title: "Ritim Notaları 🎹",
-    instruction: "Pembe çizgiye yaklaşan 8 notaya dokun!",
-    targetScore: 8,
+    instruction: "Sadece 🎵 notalarına dokun (20 Tane)! Diğerlerine basarsan veya kaçırırsan yanarsın!",
+    targetScore: 20,
     rewardPoints: 20
   },
   memory: {
@@ -810,7 +810,7 @@ function setupFlappyGame(config) {
   canvas.addEventListener("touchstart", doJump, { passive: false });
 }
 
-/* --- YENİ OYUN 3: RİTİM PİYANO NOTALARI --- */
+/* --- YENİ OYUN 3: RİTİM PİYANO NOTALARI (TAM RİTİM KURALLARI) --- */
 function setupPianoGame(config) {
   const board = document.createElement("div");
   board.className = "piano-board";
@@ -829,44 +829,101 @@ function setupPianoGame(config) {
   modalPlayArea.appendChild(board);
 
   let hitCount = 0;
-  const noteIcons = ["🎵", "⭐", "💖", "✨"];
+  let isGameOver = false;
+  let activeNotes = [];
 
-  function spawnNote() {
-    if (hitCount >= config.targetScore) return;
+  function resetGame() {
+    isGameOver = false;
+    hitCount = 0;
+    updateGameProgress(0, config.targetScore);
+    activeNotes.forEach(n => {
+      clearInterval(n.timer);
+      if (n.element.parentNode) n.element.remove();
+    });
+    activeNotes = [];
+  }
+
+  function triggerFail(reasonText) {
+    if (isGameOver) return;
+    isGameOver = true;
+
+    modalInstruction.textContent = reasonText;
+    modalInstruction.style.color = "#e53e3e";
+
+    setTimeout(() => {
+      modalInstruction.textContent = config.instruction;
+      modalInstruction.style.color = "";
+      resetGame();
+    }, 800);
+  }
+
+  function spawnItem() {
+    if (isGameOver || hitCount >= config.targetScore) return;
+
     const laneIdx = Math.floor(Math.random() * 3);
     const targetLane = lanes[laneIdx];
 
+    // %60 ihtimalle gerçek ritim notası (🎵), %40 ihtimalle tuzak (⭐, 💖, 🌸)
+    const isTargetNote = Math.random() < 0.65;
+    const traps = ["⭐", "💖", "🌸", "✨"];
+    const icon = isTargetNote ? "🎵" : traps[Math.floor(Math.random() * traps.length)];
+
     const note = document.createElement("div");
     note.className = "piano-note";
-    note.textContent = noteIcons[Math.floor(Math.random() * noteIcons.length)];
+    note.textContent = icon;
+    if (!isTargetNote) {
+      note.style.background = "linear-gradient(135deg, #a0aec0, #cbd5e0)";
+      note.style.boxShadow = "0 3px 8px rgba(0,0,0,0.15)";
+    }
     targetLane.appendChild(note);
 
     let topPos = -50;
+    const noteObj = { element: note, timer: null };
+
     const fallTimer = setInterval(() => {
-      topPos += 3.8;
+      if (isGameOver) return;
+      topPos += 3.6;
       note.style.top = topPos + "px";
 
-      if (topPos > modalPlayArea.clientHeight + 20) {
+      // Yere düşme kontrolü (Çizgiyi geçip alt sınıra vurursa)
+      if (topPos > modalPlayArea.clientHeight - 10) {
         clearInterval(fallTimer);
         note.remove();
+
+        // Eğer yere düşen gerçek bir 🎵 notasıysa YANDIN!
+        if (isTargetNote && !isGameOver) {
+          triggerFail("Notayı kaçırdın! 💥 Puanlar sıfırlandı!");
+        }
       }
     }, 20);
 
+    noteObj.timer = fallTimer;
+    activeNotes.push(noteObj);
+
     const hit = (e) => {
-      e.stopPropagation();
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      if (isGameOver) return;
+
       clearInterval(fallTimer);
-      note.style.transform = "scale(1.4)";
-      note.style.opacity = "0";
-      setTimeout(() => note.remove(), 150);
-      hitCount++;
-      updateGameProgress(hitCount, config.targetScore);
+      note.remove();
+
+      if (isTargetNote) {
+        // Doğru notaya bastı! +1 Puan
+        hitCount++;
+        updateGameProgress(hitCount, config.targetScore);
+      } else {
+        // Tuzağa bastı! Yanar!
+        triggerFail("Yanlış objeye bastın! 💥 Sadece 🎵 notalarına dokun!");
+      }
     };
 
     note.addEventListener("pointerdown", hit);
+    note.addEventListener("touchstart", hit, { passive: false });
   }
 
-  gameInterval = setInterval(spawnNote, 850);
-  spawnNote();
+  const pTimer = setInterval(spawnItem, 800);
+  gameIntervals.push(pTimer);
+  spawnItem();
 }
 
 /* --- YENİ OYUN 4: ŞANS ÇARKIFELEĞİ --- */
