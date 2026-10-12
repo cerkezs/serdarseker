@@ -1986,15 +1986,34 @@ const duelWinnerTitle = document.getElementById("duelWinnerTitle");
 const duelWinnerMsg = document.getElementById("duelWinnerMsg");
 const duelWinnerIcon = document.getElementById("duelWinnerIcon");
 
+const duelPlayer1Name = document.getElementById("duelPlayer1Name");
+const duelPlayer2Name = document.getElementById("duelPlayer2Name");
+const scorePlayer1Name = document.getElementById("scorePlayer1Name");
+const scorePlayer2Name = document.getElementById("scorePlayer2Name");
+
 function openDuelModal() {
   const dModal = document.getElementById("duelModal");
   if (dModal) {
     dModal.classList.add("active");
     resetDuelLobby();
+    updateDuelLobbyNames();
     startDuelPolling();
   }
 }
 window.openDuelModal = openDuelModal;
+
+function updateDuelLobbyNames() {
+  const myName = (currentUsername || "Edanur").trim();
+  const isMeSerdar = myName.toLowerCase().includes("serdar");
+
+  const player1 = isMeSerdar ? "Edanur" : myName;
+  const player2 = "Serdar";
+
+  if (duelPlayer1Name) duelPlayer1Name.textContent = player1;
+  if (duelPlayer2Name) duelPlayer2Name.textContent = player2;
+  if (scorePlayer1Name) scorePlayer1Name.textContent = `${player1} 💖`;
+  if (scorePlayer2Name) scorePlayer2Name.textContent = `${player2} 💙`;
+}
 
 function closeDuelModal() {
   const dModal = document.getElementById("duelModal");
@@ -2025,13 +2044,13 @@ function resetDuelLobby() {
 function getDuelRole() {
   const name = (currentUsername || "Edanur").trim().toLowerCase();
   if (name.includes("serdar")) return "serdar";
-  return "edanur";
+  return "edanur"; // Serdar dışındaki herkes (Deneme, Edanur vb.) 1. oyuncudur
 }
 
 function startDuelPolling() {
   stopDuelPolling();
   pollDuelState();
-  duelPollInterval = setInterval(pollDuelState, 1500);
+  duelPollInterval = setInterval(pollDuelState, 1200);
 }
 
 function stopDuelPolling() {
@@ -2047,6 +2066,12 @@ function pollDuelState() {
     .catch(() => null)
     .then(room => {
       if (!room || typeof room !== "object") return;
+
+      // Rakibin ismini buluttan alıp ekranda güncelle
+      if (room.p1Name && duelPlayer1Name) {
+        duelPlayer1Name.textContent = room.p1Name;
+        if (scorePlayer1Name) scorePlayer1Name.textContent = `${room.p1Name} 💖`;
+      }
 
       // Durumları güncelle
       if (edanurStatusDot) {
@@ -2083,21 +2108,21 @@ function pollDuelState() {
 if (duelReadyBtn) {
   duelReadyBtn.addEventListener("click", () => {
     const role = getDuelRole();
+    const myName = (currentUsername || (role === "serdar" ? "Serdar" : "Edanur")).trim();
     duelReadyBtn.disabled = true;
     duelReadyBtn.textContent = "Hazırsın! 👍";
     duelReadyBtn.style.opacity = "0.7";
     duelWaitText.classList.remove("hidden");
 
     // Telegram Bildirimi: Rakibe meydan oku!
-    const sender = role === "serdar" ? "Serdar" : "Edanur";
     const rival = role === "serdar" ? "Edanur" : "Serdar";
     sendTelegramLog(
       `⚔️ <b>CANLI DÜELLO ÇAĞRISI!</b>\n` +
-      `🔥 <b>${sender}</b> düelloda hazır oldu ve <b>${rival}</b>'ı bekliyor!\n` +
+      `🔥 <b>${myName}</b> düelloda hazır oldu ve <b>${rival}</b>'ı bekliyor!\n` +
       `🏆 Kahvesine kapışma başlıyor, hemen siteye gir!`
     );
 
-    // Buluta hazır bilgisini yaz
+    // Buluta hazır bilgisini ve ismini yaz
     fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
       .then(res => res.json())
       .catch(() => ({}))
@@ -2109,6 +2134,7 @@ if (duelReadyBtn) {
         } else {
           updated.edanurReady = true;
           updated.edanurScore = 0;
+          updated.p1Name = myName;
         }
         fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
           method: "POST",

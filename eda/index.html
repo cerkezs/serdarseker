@@ -258,13 +258,13 @@
         <div class="duel-vs-banner">
           <div class="duel-player-badge">
             <span class="duel-avatar">💖</span>
-            <span class="duel-name">Edanur</span>
+            <span class="duel-name" id="duelPlayer1Name">Edanur</span>
             <span class="duel-status-dot" id="edanurStatusDot">⚪ Bekliyor</span>
           </div>
           <div class="duel-vs-text">VS</div>
           <div class="duel-player-badge">
             <span class="duel-avatar">💙</span>
-            <span class="duel-name">Serdar</span>
+            <span class="duel-name" id="duelPlayer2Name">Serdar</span>
             <span class="duel-status-dot" id="serdarStatusDot">⚪ Bekliyor</span>
           </div>
         </div>
@@ -281,14 +281,14 @@
       <div id="duelPlayArea" class="hidden">
         <div class="duel-scoreboard">
           <div class="duel-score-box edanur-score">
-            <span>Edanur 💖</span>
+            <span id="scorePlayer1Name">Edanur 💖</span>
             <strong id="duelEdaScore">0</strong>
           </div>
           <div class="duel-timer-box">
             <span id="duelTimer">30</span><small>sn</small>
           </div>
           <div class="duel-score-box serdar-score">
-            <span>Serdar 💙</span>
+            <span id="scorePlayer2Name">Serdar 💙</span>
             <strong id="duelSerdarScore">0</strong>
           </div>
         </div>
@@ -372,6 +372,6 @@
 
   <!-- Konfeti Kütüphanesi -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=5.0"></script>
 </body>
 </html>
