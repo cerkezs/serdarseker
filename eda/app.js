@@ -107,9 +107,9 @@ const GAMES_CONFIG = {
   },
   catch: {
     title: "Yıldız Yağmuru ⭐",
-    instruction: "Sepetle 5 parlayan yıldız yakala!",
-    targetScore: 5,
-    rewardPoints: 15
+    instruction: "Sepetle 20 altın yıldız (⭐) yakala! Bombalara (💣) çarparsan yanarsın!",
+    targetScore: 20,
+    rewardPoints: 20
   },
   mole: {
     title: "Sevimli Kedi 🐾",
@@ -1118,38 +1118,93 @@ function setupCatchGame(config) {
     if (e.touches[0]) updatePos(e.touches[0].clientX);
   });
 
-  const starIcons = ["⭐", "✨", "💫", "🌟"];
-  function spawnStar() {
-    if (currentGameScore >= config.targetScore) return;
-    const star = document.createElement("div");
-    star.className = "falling-item";
-    star.textContent = starIcons[Math.floor(Math.random() * starIcons.length)];
-    const startX = Math.random() * (modalPlayArea.clientWidth - 40) + 20;
-    star.style.left = startX + "px";
-    star.style.top = "0px";
-    modalPlayArea.appendChild(star);
+  let catchScore = 0;
+  let isGameOver = false;
+  let activeItems = [];
 
-    let starY = 0;
-    const speed = 3.2;
-    const fall = setInterval(() => {
-      starY += speed;
-      star.style.top = starY + "px";
-      const bY = modalPlayArea.clientHeight - 40;
-      if (starY >= bY - 20 && starY <= bY + 20) {
-        if (Math.abs(startX - basketX) < 45) {
-          clearInterval(fall);
-          star.remove();
-          updateGameProgress(currentGameScore + 1, config.targetScore);
+  function resetGame() {
+    isGameOver = false;
+    catchScore = 0;
+    updateGameProgress(0, config.targetScore);
+    activeItems.forEach(item => {
+      clearInterval(item.timer);
+      if (item.element.parentNode) item.element.remove();
+    });
+    activeItems = [];
+  }
+
+  function triggerFail(reasonText) {
+    if (isGameOver) return;
+    isGameOver = true;
+
+    modalInstruction.textContent = reasonText;
+    modalInstruction.style.color = "#e53e3e";
+
+    setTimeout(() => {
+      modalInstruction.textContent = config.instruction;
+      modalInstruction.style.color = "";
+      resetGame();
+    }, 800);
+  }
+
+  function spawnFallingItem() {
+    if (isGameOver || catchScore >= config.targetScore) return;
+
+    // %70 ihtimalle parlayan yıldız (⭐), %30 ihtimalle bomba/tuzak (💣, 🪨)
+    const isStar = Math.random() < 0.7;
+    const trapIcons = ["💣", "🪨", "⚡"];
+    const icon = isStar ? "⭐" : trapIcons[Math.floor(Math.random() * trapIcons.length)];
+
+    const itemElem = document.createElement("div");
+    itemElem.className = "falling-item";
+    itemElem.textContent = icon;
+
+    const startX = Math.random() * (modalPlayArea.clientWidth - 50) + 25;
+    itemElem.style.left = startX + "px";
+    itemElem.style.top = "0px";
+    modalPlayArea.appendChild(itemElem);
+
+    let itemY = 0;
+    const speed = 3.2 + Math.random() * 0.8;
+    const itemObj = { element: itemElem, timer: null };
+
+    const fallTimer = setInterval(() => {
+      if (isGameOver) return;
+      itemY += speed;
+      itemElem.style.top = itemY + "px";
+
+      const bY = modalPlayArea.clientHeight - 42;
+      // Sepetle temas kontrolü
+      if (itemY >= bY - 18 && itemY <= bY + 18) {
+        if (Math.abs(startX - basketX) < 42) {
+          clearInterval(fallTimer);
+          itemElem.remove();
+
+          if (isStar) {
+            // Yıldız yakaladı! +1 Puan
+            catchScore++;
+            updateGameProgress(catchScore, config.targetScore);
+          } else {
+            // Bombaya çarptı! Yanar!
+            triggerFail("Bombaya çarptın! 💥 Puanlar sıfırlandı!");
+          }
           return;
         }
       }
-      if (starY > modalPlayArea.clientHeight) {
-        clearInterval(fall);
-        star.remove();
+
+      if (itemY > modalPlayArea.clientHeight + 10) {
+        clearInterval(fallTimer);
+        itemElem.remove();
       }
     }, 20);
+
+    itemObj.timer = fallTimer;
+    activeItems.push(itemObj);
   }
-  gameInterval = setInterval(spawnStar, 1100);
+
+  const cTimer = setInterval(spawnFallingItem, 900);
+  gameIntervals.push(cTimer);
+  spawnFallingItem();
 }
 
 function setupMoleGame(config) {
