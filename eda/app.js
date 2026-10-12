@@ -684,7 +684,7 @@ function setupNinjaGame(config) {
   canvas.addEventListener("touchend", () => { trail = []; });
 }
 
-/* --- YENİ OYUN 2: FLAPPY UÇAN KALP --- */
+/* --- YENİ OYUN 2: FLAPPY UÇAN KALP (ÇARPINCA SIFIRLANIR) --- */
 function setupFlappyGame(config) {
   const canvas = document.createElement("canvas");
   canvas.className = "flappy-canvas";
@@ -695,14 +695,26 @@ function setupFlappyGame(config) {
 
   let birdY = canvas.height / 2;
   let birdVelocity = 0;
-  const gravity = 0.3;
-  const jump = -5.5;
+  const gravity = 0.32;
+  const jump = -5.8;
 
   let passedClouds = 0;
   let pipes = [];
+  let isGameOver = false;
+
+  function resetGame() {
+    birdY = canvas.height / 2;
+    birdVelocity = 0;
+    passedClouds = 0;
+    pipes = [];
+    isGameOver = false;
+    updateGameProgress(0, config.targetScore);
+    addPipe();
+  }
 
   function addPipe() {
-    const gap = 110;
+    if (isGameOver) return;
+    const gap = 115;
     const topH = 40 + Math.random() * (canvas.height - gap - 80);
     pipes.push({ x: canvas.width, top: topH, bottom: topH + gap, passed: false });
   }
@@ -710,23 +722,28 @@ function setupFlappyGame(config) {
   const loop = setInterval(() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    birdVelocity += gravity;
-    birdY += birdVelocity;
+    if (!isGameOver) {
+      birdVelocity += gravity;
+      birdY += birdVelocity;
 
-    // Zemin / tavan koruması
-    if (birdY > canvas.height - 25) { birdY = canvas.height - 25; birdVelocity = 0; }
-    if (birdY < 20) { birdY = 20; birdVelocity = 0; }
+      // Zemin ve tavan çarpma kontrolü
+      if (birdY > canvas.height - 20 || birdY < 15) {
+        triggerHit();
+      }
+    }
 
     // Kuş / Kalp çiz
-    ctx.font = "30px serif";
+    ctx.font = "28px serif";
     ctx.textAlign = "center";
-    ctx.fillText("💖", 60, birdY);
+    ctx.fillText(isGameOver ? "💥" : "💖", 60, birdY);
 
-    // Bulut engelleri çiz
+    // Bulut engelleri çiz ve çarpışma kontrolü
     ctx.fillStyle = "rgba(255, 182, 193, 0.75)";
     for (let i = pipes.length - 1; i >= 0; i--) {
       const p = pipes[i];
-      p.x -= 2.2;
+      if (!isGameOver) {
+        p.x -= 2.2;
+      }
 
       // Üst bulut sütunu
       ctx.fillRect(p.x, 0, 42, p.top);
@@ -737,7 +754,20 @@ function setupFlappyGame(config) {
       ctx.fillRect(p.x, p.bottom, 42, canvas.height - p.bottom);
       ctx.fillText("☁️", p.x + 21, p.bottom + 25);
 
-      if (!p.passed && p.x < 60) {
+      // Çarpışma Kutusu Kontrolü (Hitbox)
+      const birdX = 60;
+      const birdRadius = 13;
+      if (
+        birdX + birdRadius > p.x &&
+        birdX - birdRadius < p.x + 42
+      ) {
+        if (birdY - birdRadius < p.top || birdY + birdRadius > p.bottom) {
+          triggerHit();
+        }
+      }
+
+      // Başarılı geçiş
+      if (!p.passed && p.x + 42 < birdX) {
         p.passed = true;
         passedClouds++;
         updateGameProgress(passedClouds, config.targetScore);
@@ -747,12 +777,34 @@ function setupFlappyGame(config) {
     }
   }, 1000 / 60);
 
-  const spawnTimer = setInterval(addPipe, 1700);
+  function triggerHit() {
+    if (isGameOver) return;
+    isGameOver = true;
+
+    // Küçük bir titreşim ve mesaj
+    modalInstruction.textContent = "Çarptın! 💥 Puanlar sıfırlandı, baştan başlıyor...";
+    modalInstruction.style.color = "#e53e3e";
+
+    setTimeout(() => {
+      modalInstruction.textContent = config.instruction;
+      modalInstruction.style.color = "";
+      resetGame();
+    }, 700);
+  }
+
+  const spawnTimer = setInterval(addPipe, 1750);
   addPipe();
   gameIntervals.push(loop, spawnTimer);
 
-  const doJump = () => { birdVelocity = jump; };
+  const doJump = (e) => {
+    if (e) e.preventDefault();
+    if (!isGameOver) {
+      birdVelocity = jump;
+    }
+  };
+
   canvas.addEventListener("pointerdown", doJump);
+  canvas.addEventListener("touchstart", doJump, { passive: false });
 }
 
 /* --- YENİ OYUN 3: RİTİM PİYANO NOTALARI --- */
