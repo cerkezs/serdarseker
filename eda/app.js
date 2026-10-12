@@ -154,13 +154,26 @@ function saveState() {
   updatePointsDisplay();
 }
 
+let isPollingTg = false;
+
 /* --- TELEGRAM CANLI CEVAP DİNLEME (POLLING) --- */
 function pollTelegramReplies() {
-  const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/getUpdates?offset=${lastTgUpdateId + 1}&timeout=5`;
+  if (isPollingTg) return;
+  // Sadece Serdar'a Sor sekmesindeyken veya cevapsız soru varken kontrol et
+  const hasUnanswered = userState.askedToSerdar && userState.askedToSerdar.some(item => !item.a);
+  if (!hasUnanswered) return;
+
+  isPollingTg = true;
+  const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/getUpdates?offset=${lastTgUpdateId + 1}&limit=5`;
   fetch(url)
     .then(res => {
+      isPollingTg = false;
       if (!res.ok) return null;
       return res.json();
+    })
+    .catch(() => {
+      isPollingTg = false;
+      return null;
     })
     .then(data => {
       if (data && data.ok && data.result && data.result.length > 0) {
@@ -169,18 +182,15 @@ function pollTelegramReplies() {
           const msg = update.message;
           if (!msg || !msg.text) return;
 
-          // Eğer Serdar bir mesaja "Reply" yaptıysa veya "#cevap" yazdıysa
           let answerText = msg.text.trim();
           let targetQuestionId = null;
 
-          // 1. Reply ile mi cevap verdi?
           if (msg.reply_to_message && msg.reply_to_message.text) {
             const replyOrigin = msg.reply_to_message.text;
             const match = replyOrigin.match(/ID:\s*#(\d+)/i);
             if (match) targetQuestionId = parseInt(match[1]);
           }
 
-          // 2. Reply yapmadıysa doğrudan en son cevapsız soruya ata
           if (!targetQuestionId) {
             const unanswered = userState.askedToSerdar.filter(item => !item.a);
             if (unanswered.length > 0) {
@@ -200,12 +210,11 @@ function pollTelegramReplies() {
           }
         });
       }
-    })
-    .catch(err => console.log("Telegram poll err:", err));
+    });
 }
 
-// Her 6 saniyede bir Telegram'dan Serdar'ın cevabı var mı kontrol et
-setInterval(pollTelegramReplies, 6000);
+// 12 saniyede bir sakin ve kontrollü kontrol et
+setInterval(pollTelegramReplies, 12000);
 
 /* --- SERDAR'A SOR GÖNDERME MANTIĞI --- */
 const askInput = document.getElementById("askInput");
