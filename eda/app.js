@@ -1987,19 +1987,28 @@ const duelWinnerMsg = document.getElementById("duelWinnerMsg");
 const duelWinnerIcon = document.getElementById("duelWinnerIcon");
 
 function openDuelModal() {
-  if (duelModal) {
-    duelModal.classList.add("active");
+  const dModal = document.getElementById("duelModal");
+  if (dModal) {
+    dModal.classList.add("active");
     resetDuelLobby();
     startDuelPolling();
   }
 }
+window.openDuelModal = openDuelModal;
 
 function closeDuelModal() {
-  if (duelModal) {
-    duelModal.classList.remove("active");
+  const dModal = document.getElementById("duelModal");
+  if (dModal) {
+    dModal.classList.remove("active");
     stopDuelPolling();
     stopDuelGame();
   }
+}
+window.closeDuelModal = closeDuelModal;
+
+const cardDuelMode = document.getElementById("cardDuelMode");
+if (cardDuelMode) {
+  cardDuelMode.addEventListener("click", openDuelModal);
 }
 
 function resetDuelLobby() {
