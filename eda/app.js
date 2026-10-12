@@ -490,11 +490,15 @@ const modalProgressFill = document.getElementById("modalProgressFill");
 
 let currentGameKey = null;
 let currentGameScore = 0;
-let gameInterval = null;
+let gameIntervals = []; // Tüm interval'leri topluca temizlemek için dizi
 
-if (modalBackBtn) modalBackBtn.addEventListener("click", closeGame);
+function clearAllGameIntervals() {
+  gameIntervals.forEach(id => clearInterval(id));
+  gameIntervals = [];
+}
 
 window.openGame = function(gameKey) {
+  clearAllGameIntervals();
   currentGameKey = gameKey;
   const config = GAMES_CONFIG[gameKey];
   if (!config) return;
@@ -504,9 +508,10 @@ window.openGame = function(gameKey) {
   currentGameScore = 0;
   updateGameProgress(0, config.targetScore);
   modalPlayArea.innerHTML = "";
-  gameModal.classList.add("active");
 
-  if (gameInterval) clearInterval(gameInterval);
+  // Modalı kesin olarak görünür yap
+  gameModal.style.display = "flex";
+  gameModal.classList.add("active");
 
   setTimeout(() => {
     switch(gameKey) {
@@ -519,20 +524,29 @@ window.openGame = function(gameKey) {
       case "mole": setupMoleGame(config); break;
       case "wheel": setupWheelGame(config); break;
     }
-  }, 50);
+  }, 60);
 };
 
 window.closeGame = function() {
-  if (gameInterval) clearInterval(gameInterval);
-  gameInterval = null;
+  clearAllGameIntervals();
   gameModal.classList.remove("active");
+  gameModal.style.display = "none";
   modalPlayArea.innerHTML = "";
 };
 
 window.openSpecialStory = function() {
+  specialStoryModal.style.display = "flex";
   specialStoryModal.classList.add("active");
   renderSpecialFinal();
 };
+
+const storyCloseBtn = document.getElementById("storyCloseBtn");
+if (storyCloseBtn) {
+  storyCloseBtn.addEventListener("click", () => {
+    specialStoryModal.classList.remove("active");
+    specialStoryModal.style.display = "none";
+  });
+}
 
 /* --- YENİ OYUN 1: MEYVE KESMECE (FRUIT NINJA) --- */
 function setupNinjaGame(config) {
@@ -595,7 +609,7 @@ function setupNinjaGame(config) {
   }, 1000 / 60);
 
   const spawnTimer = setInterval(spawnFruit, 800);
-  gameInterval = spawnTimer;
+  gameIntervals.push(loop, spawnTimer);
 
   // Dilimleme / Kaydırma Olayı
   const handleMove = (x, y) => {
@@ -690,7 +704,7 @@ function setupFlappyGame(config) {
 
   const spawnTimer = setInterval(addPipe, 1700);
   addPipe();
-  gameInterval = spawnTimer;
+  gameIntervals.push(loop, spawnTimer);
 
   const doJump = () => { birdVelocity = jump; };
   canvas.addEventListener("pointerdown", doJump);
@@ -880,7 +894,8 @@ function setupBalloonsGame(config) {
   }
 
   for (let i = 0; i < 4; i++) setTimeout(spawnBalloon, i * 250);
-  gameInterval = setInterval(spawnBalloon, 850);
+  const bTimer = setInterval(spawnBalloon, 850);
+  gameIntervals.push(bTimer);
 }
 
 function setupMemoryGame(config) {
@@ -1070,19 +1085,8 @@ function setupMazeGame(config) {
 }
 
 /* --- ÖZEL MOD: İLK 5 BÖLÜM VE KAÇAN HAYIR BUTONU FİNALİ --- */
-const cardSpecialSurprise = document.getElementById("cardSpecialSurprise");
 const specialStoryModal = document.getElementById("specialStoryModal");
-const storyCloseBtn = document.getElementById("storyCloseBtn");
 const storyContent = document.getElementById("storyContent");
-
-storyCloseBtn.addEventListener("click", () => {
-  specialStoryModal.classList.remove("active");
-});
-
-cardSpecialSurprise.addEventListener("click", () => {
-  specialStoryModal.classList.add("active");
-  renderSpecialFinal();
-});
 
 function renderSpecialFinal() {
   storyContent.innerHTML = `

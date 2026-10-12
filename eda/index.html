@@ -174,65 +174,64 @@
         </div>
       </div>
     </section>
-
-    <!-- OYUN OYNAMA MODALI / SAHNESİ -->
-    <div class="game-modal" id="gameModal">
-      <div class="modal-card">
-        <div class="modal-header">
-          <button class="modal-back-btn" id="modalBackBtn">✕ Kapat</button>
-          <span class="modal-game-title" id="modalGameTitle">Mini Oyun</span>
-          <span class="modal-score" id="modalScore">0 / 5</span>
-        </div>
-
-        <h3 class="modal-instruction" id="modalInstruction">Talimat</h3>
-
-        <div class="modal-play-area" id="modalPlayArea">
-          <!-- Oyun alanı -->
-        </div>
-
-        <div class="modal-footer">
-          <div class="modal-progress-bar">
-            <div class="modal-progress-fill" id="modalProgressFill" style="width: 0%"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ÖZEL KAZI-KAZAN VE FİNAL SAHNESİ MODALI (5 Bölümlük Yolculuk) -->
-    <div class="special-story-modal" id="specialStoryModal">
-      <div class="story-card">
-        <button class="story-close-btn" id="storyCloseBtn">✕</button>
-        <div id="storyContent">
-          <!-- Dinamik kazı-kazan veya final buraya gelecek -->
-        </div>
-      </div>
-    </div>
-
-    <!-- GİZLİ ADMİN PANELİ MODALI (SADECE SENİN İÇİN) -->
-    <div class="admin-modal" id="adminModal">
-      <div class="admin-card">
-        <div class="admin-header">
-          <h3>👑 Yönetici Paneli (Serdar)</h3>
-          <button class="modal-back-btn" id="adminCloseBtn">✕</button>
-        </div>
-        <div id="adminAuthArea">
-          <p>Lütfen PIN kodunu gir:</p>
-          <input type="password" id="adminPinInput" placeholder="PIN Kodu (1907)" maxlength="6">
-          <button class="primary-btn" id="adminLoginBtn">Giriş Yap</button>
-        </div>
-        <div id="adminDataArea" class="hidden">
-          <div class="admin-stats">
-            <div>Toplam Puan: <strong id="adminTotalPoints">0</strong></div>
-            <div>Cevaplanan: <strong id="adminAnsweredCount">0/10</strong></div>
-          </div>
-          <h4>Edanur'un Cevapları:</h4>
-          <div class="admin-answers-list" id="adminAnswersList"></div>
-          <button class="clear-data-btn" id="adminResetBtn">Verileri Sıfırla (Test İçin)</button>
-        </div>
-      </div>
-    </div>
-
   </main>
+
+  <!-- OYUN OYNAMA MODALI / SAHNESİ (BODY SEVİYESİNDE) -->
+  <div class="game-modal" id="gameModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <button class="modal-back-btn" id="modalBackBtn" onclick="closeGame()">✕ Kapat</button>
+        <span class="modal-game-title" id="modalGameTitle">Mini Oyun</span>
+        <span class="modal-score" id="modalScore">0 / 5</span>
+      </div>
+
+      <h3 class="modal-instruction" id="modalInstruction">Talimat</h3>
+
+      <div class="modal-play-area" id="modalPlayArea">
+        <!-- Oyun alanı -->
+      </div>
+
+      <div class="modal-footer">
+        <div class="modal-progress-bar">
+          <div class="modal-progress-fill" id="modalProgressFill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÖZEL KAZI-KAZAN VE FİNAL SAHNESİ MODALI -->
+  <div class="special-story-modal" id="specialStoryModal">
+    <div class="story-card">
+      <button class="story-close-btn" id="storyCloseBtn">✕</button>
+      <div id="storyContent">
+        <!-- Dinamik final -->
+      </div>
+    </div>
+  </div>
+
+  <!-- GİZLİ ADMİN PANELİ MODALI -->
+  <div class="admin-modal" id="adminModal">
+    <div class="admin-card">
+      <div class="admin-header">
+        <h3>👑 Yönetici Paneli (Serdar)</h3>
+        <button class="modal-back-btn" id="adminCloseBtn">✕</button>
+      </div>
+      <div id="adminAuthArea">
+        <p>Lütfen PIN kodunu gir:</p>
+        <input type="password" id="adminPinInput" placeholder="PIN Kodu (1907)" maxlength="6">
+        <button class="primary-btn" id="adminLoginBtn">Giriş Yap</button>
+      </div>
+      <div id="adminDataArea" class="hidden">
+        <div class="admin-stats">
+          <div>Toplam Puan: <strong id="adminTotalPoints">0</strong></div>
+          <div>Cevaplanan: <strong id="adminAnsweredCount">0/10</strong></div>
+        </div>
+        <h4>Edanur'un Cevapları:</h4>
+        <div class="admin-answers-list" id="adminAnswersList"></div>
+        <button class="clear-data-btn" id="adminResetBtn">Verileri Sıfırla (Test İçin)</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ALT SABİT NAVİGASYON (TAB BAR - 3 SEKME) -->
   <nav class="bottom-nav">
