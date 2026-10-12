@@ -236,6 +236,17 @@
     </div>
   </div>
 
+  <!-- KULLANICI KARŞILAMA / AD GİRİŞİ MODALI -->
+  <div class="welcome-modal" id="welcomeModal">
+    <div class="welcome-card">
+      <div class="welcome-icon">🌸</div>
+      <h2>Hoş Geldin!</h2>
+      <p>Sana özel hazırlanan bu dünyaya adım atmadan önce seni nasıl çağırayım?</p>
+      <input type="text" id="usernameInput" class="welcome-input" value="Edanur" maxlength="20" placeholder="İsmini yaz...">
+      <button class="primary-btn welcome-btn" id="saveUsernameBtn">Başla ✨</button>
+    </div>
+  </div>
+
   <!-- GİZLİ ADMİN PANELİ MODALI -->
   <div class="admin-modal" id="adminModal">
     <div class="admin-card">
@@ -249,13 +260,21 @@
         <button class="primary-btn" id="adminLoginBtn">Giriş Yap</button>
       </div>
       <div id="adminDataArea" class="hidden">
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.8rem; font-weight:700; color:#4a5568;">Kullanıcı Seç:</label>
+          <select id="adminUserSelect" style="width:100%; padding:8px; border-radius:10px; border:1px solid #cbd5e0; margin-top:4px; font-weight:600;">
+            <option value="Edanur">Edanur (Varsayılan)</option>
+          </select>
+        </div>
         <div class="admin-stats">
-          <div>Toplam Puan: <strong id="adminTotalPoints">0</strong></div>
+          <div>Puan: <strong id="adminTotalPoints">0</strong></div>
           <div>Cevaplanan: <strong id="adminAnsweredCount">0/10</strong></div>
         </div>
-        <h4>Edanur'un Cevapları:</h4>
+        <h4>Cevaplar:</h4>
         <div class="admin-answers-list" id="adminAnswersList"></div>
-        <button class="clear-data-btn" id="adminResetBtn">Verileri Sıfırla (Test İçin)</button>
+        <h4>Serdar'a Sorduğu Sorular:</h4>
+        <div class="admin-answers-list" id="adminAskedList" style="margin-top:6px;"></div>
+        <button class="clear-data-btn" id="adminResetBtn">Seçili Kullanıcıyı Sıfırla</button>
       </div>
     </div>
   </div>

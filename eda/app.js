@@ -143,8 +143,11 @@ const GAMES_CONFIG = {
   }
 };
 
-/* --- KULLANICI DURUMU & LOCALSTORAGE --- */
+/* --- KULLANICI ADI & DURUMU & LOCALSTORAGE --- */
+let currentUsername = localStorage.getItem("eda_active_username") || "";
+
 let userState = {
+  username: "Edanur",
   points: 0,
   unlockedQuestions: [], // [1, 2, 3] açılan soru ID'leri
   answers: {}, // { 1: "Cevap..." }
@@ -153,6 +156,71 @@ let userState = {
 };
 
 let lastTgUpdateId = 0;
+
+/* --- BULUT VERİTABANI (KVDB.IO - DİNAMİK KULLANICI BAZLI) --- */
+const CLOUD_BASE_URL = "https://kvdb.io/LzCGBkLwZ3v6g6R4qP9h6K/";
+const USERS_LIST_KEY = "eda_all_registered_users";
+
+function getUserStorageKey(name) {
+  const safeName = (name || "edanur").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+  return `eda_user_${safeName}`;
+}
+
+// Kullanıcı Kimliği Belirleme (Serdar Admin mi yoksa Oyuncu mu?)
+let userRole = localStorage.getItem("serdar_role") || "player";
+
+function syncStateToCloud() {
+  if (userRole === "serdar_admin") return; // Serdar admin modundayken kullanıcının verilerini ezmez!
+  const userKey = getUserStorageKey(currentUsername || "edanur");
+  try {
+    userState.username = currentUsername || "Edanur";
+    userState.lastActive = new Date().toLocaleString("tr-TR");
+
+    // 1. Kullanıcının kendi verisini buluta yaz
+    fetch(CLOUD_BASE_URL + userKey, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userState)
+    }).catch(e => console.log("Cloud sync err:", e));
+
+    // 2. Kullanıcıyı global listeye kaydet (Admin paneli için)
+    registerUserToGlobalList(userState.username);
+  } catch (e) {}
+}
+
+function registerUserToGlobalList(name) {
+  if (!name) return;
+  fetch(CLOUD_BASE_URL + USERS_LIST_KEY)
+    .then(res => res.json())
+    .catch(() => [])
+    .then(list => {
+      let users = Array.isArray(list) ? list : [];
+      if (!users.includes(name)) {
+        users.push(name);
+        fetch(CLOUD_BASE_URL + USERS_LIST_KEY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(users)
+        }).catch(() => {});
+      }
+    });
+}
+
+function loadStateFromCloud(targetUser, callback) {
+  const userKey = getUserStorageKey(targetUser || currentUsername || "edanur");
+  fetch(CLOUD_BASE_URL + userKey)
+    .then(res => res.json())
+    .then(data => {
+      if (data && typeof data === "object") {
+        if (callback) callback(data);
+      } else {
+        if (callback) callback(null);
+      }
+    })
+    .catch(() => {
+      if (callback) callback(null);
+    });
+}
 
 function loadState() {
   const saved = localStorage.getItem("edanur_game_state");
@@ -165,11 +233,33 @@ function loadState() {
   }
   updatePointsDisplay();
   renderAskedQuestions();
+
+  // Eğer kullanıcı adı varsa buluttan son verisini çekip eşitle
+  if (currentUsername && userRole !== "serdar_admin") {
+    loadStateFromCloud(currentUsername, (cloudData) => {
+      if (cloudData && typeof cloudData === "object") {
+        // En yüksek puan veya güncel cevapları koru
+        if ((cloudData.points || 0) > userState.points) {
+          userState.points = cloudData.points;
+        }
+        userState.unlockedQuestions = Array.from(new Set([...(userState.unlockedQuestions || []), ...(cloudData.unlockedQuestions || [])]));
+        userState.answers = { ...(userState.answers || {}), ...(cloudData.answers || {}) };
+        if (Array.isArray(cloudData.askedToSerdar) && cloudData.askedToSerdar.length > 0) {
+          userState.askedToSerdar = cloudData.askedToSerdar;
+        }
+        localStorage.setItem("edanur_game_state", JSON.stringify(userState));
+        updatePointsDisplay();
+        renderQuestions();
+        renderAskedQuestions();
+      }
+    });
+  }
 }
 
 function saveState() {
   localStorage.setItem("edanur_game_state", JSON.stringify(userState));
   updatePointsDisplay();
+  syncStateToCloud();
 }
 
 let isPollingTg = false;
@@ -327,8 +417,9 @@ function addPoints(amount, source) {
   renderQuestions();
   checkNewUnlocks();
 
+  const uname = currentUsername || "Edanur";
   sendTelegramLog(
-    `🌟 <b>Edanur Puan Kazandı!</b>\n` +
+    `🌟 <b>${uname} Puan Kazandı!</b>\n` +
     `🎮 Oyun: <i>${source}</i>\n` +
     `➕ Kazanılan: <b>+${amount} ⭐</b>\n` +
     `🏆 Toplam Puan: <b>${userState.points} ⭐</b>`
@@ -343,8 +434,9 @@ function updatePointsDisplay() {
 /* --- TELEGRAM: GİRİŞ LOGU --- */
 function checkEntranceLog() {
   const now = new Date().toLocaleString("tr-TR");
+  const uname = currentUsername || "Edanur";
   sendTelegramLog(
-    `🌸 <b>Edanur Siteye Giriş Yaptı!</b>\n` +
+    `🌸 <b>${uname} Siteye Giriş Yaptı!</b>\n` +
     `⏰ Zaman: ${now}\n` +
     `⭐ Mevcut Puanı: <b>${userState.points}</b>\n` +
     `📝 Yanıtlanan Soru: <b>${Object.keys(userState.answers).length} / 10</b>`
@@ -1699,38 +1791,148 @@ adminLoginBtn.addEventListener("click", () => {
   }
 });
 
+const adminUserSelect = document.getElementById("adminUserSelect");
+const adminAskedList = document.getElementById("adminAskedList");
+
 function renderAdminData() {
-  adminTotalPoints.textContent = userState.points;
-  const answeredKeys = Object.keys(userState.answers);
-  adminAnsweredCount.textContent = `${answeredKeys.length} / 10`;
+  localStorage.setItem("serdar_role", "serdar_admin"); // Serdar'ın kendi tarayıcısı admin olarak işaretlendi
+  userRole = "serdar_admin";
 
-  adminAnswersList.innerHTML = "";
-  if (answeredKeys.length === 0) {
-    adminAnswersList.innerHTML = `<p style="font-size:0.8rem; color:#a0aec0;">Henüz cevaplanan soru yok.</p>`;
-    return;
-  }
+  // Tüm kayıtlı kullanıcıları buluttan çek ve select listesine doldur
+  fetch(CLOUD_BASE_URL + USERS_LIST_KEY)
+    .then(res => res.json())
+    .catch(() => ["Edanur"])
+    .then(usersList => {
+      let list = Array.isArray(usersList) && usersList.length > 0 ? usersList : ["Edanur"];
+      if (!list.includes("Edanur")) list.unshift("Edanur");
 
-  answeredKeys.forEach(k => {
-    const qObj = QUESTIONS_DATA.find(q => q.id === parseInt(k));
-    const item = document.createElement("div");
-    item.className = "admin-answer-item";
-    item.innerHTML = `
-      <strong>Soru ${k}:</strong> ${qObj ? qObj.q : ''}<br>
-      <span style="color:#d6336c; font-weight:700;">Cevap:</span> ${userState.answers[k]}
-    `;
-    adminAnswersList.appendChild(item);
+      const currentSelected = adminUserSelect.value || "Edanur";
+      adminUserSelect.innerHTML = "";
+      list.forEach(u => {
+        const opt = document.createElement("option");
+        opt.value = u;
+        opt.textContent = `${u}`;
+        if (u === currentSelected) opt.selected = true;
+        adminUserSelect.appendChild(opt);
+      });
+
+      fetchAndDisplayUserData(adminUserSelect.value || "Edanur");
+    });
+}
+
+if (adminUserSelect) {
+  adminUserSelect.addEventListener("change", () => {
+    fetchAndDisplayUserData(adminUserSelect.value);
+  });
+}
+
+function fetchAndDisplayUserData(targetUser) {
+  adminAnswersList.innerHTML = `<p style="font-size:0.8rem; color:#718096;"><b>${targetUser}</b> verileri yükleniyor... ⏳</p>`;
+  if (adminAskedList) adminAskedList.innerHTML = "";
+
+  loadStateFromCloud(targetUser, (cloudData) => {
+    const dataToDisplay = cloudData || { points: 0, answers: {}, askedToSerdar: [] };
+
+    adminTotalPoints.textContent = dataToDisplay.points || 0;
+    const answeredKeys = Object.keys(dataToDisplay.answers || {});
+    adminAnsweredCount.textContent = `${answeredKeys.length} / 10`;
+
+    // 1. Kilitli Soruların Cevapları
+    adminAnswersList.innerHTML = "";
+    if (answeredKeys.length === 0) {
+      adminAnswersList.innerHTML = `<p style="font-size:0.8rem; color:#a0aec0;">${targetUser} henüz bir soru cevaplamadı.</p>`;
+    } else {
+      answeredKeys.forEach(k => {
+        const qObj = QUESTIONS_DATA.find(q => q.id === parseInt(k));
+        const item = document.createElement("div");
+        item.className = "admin-answer-item";
+        item.innerHTML = `
+          <strong>Soru ${k}:</strong> ${qObj ? qObj.q : ''}<br>
+          <span style="color:#d6336c; font-weight:700;">${targetUser}'un Cevabı:</span> ${dataToDisplay.answers[k]}
+        `;
+        adminAnswersList.appendChild(item);
+      });
+    }
+
+    // 2. Serdar'a Sorduğu Sorular
+    if (adminAskedList) {
+      const askedArr = dataToDisplay.askedToSerdar || [];
+      if (askedArr.length === 0) {
+        adminAskedList.innerHTML = `<p style="font-size:0.8rem; color:#a0aec0;">Henüz Serdar'a bir soru sormadı.</p>`;
+      } else {
+        askedArr.forEach(q => {
+          const item = document.createElement("div");
+          item.className = "admin-answer-item";
+          item.style.borderLeftColor = "#9b51e0";
+          item.innerHTML = `
+            <strong>Soru:</strong> "${q.q}" <small style="color:#a0aec0;">(${q.date})</small><br>
+            <span style="color:#9b51e0; font-weight:700;">Cevap:</span> ${q.a ? q.a : '<i style="color:#e53e3e;">Cevap bekliyor</i>'}
+          `;
+          adminAskedList.appendChild(item);
+        });
+      }
+    }
   });
 }
 
 adminResetBtn.addEventListener("click", () => {
-  if (confirm("Test verilerini sıfırlamak istiyor musun?")) {
-    localStorage.removeItem("edanur_game_state");
-    userState = { points: 0, answers: {} };
-    saveState();
-    renderQuestions();
-    renderAdminData();
+  const targetUser = adminUserSelect ? adminUserSelect.value : "Edanur";
+  if (confirm(`${targetUser} kullanıcısının buluttaki tüm puan ve cevaplarını sıfırlamak istiyor musun?`)) {
+    const emptyState = { username: targetUser, points: 0, unlockedQuestions: [], answers: {}, askedToSerdar: [] };
+    const userKey = getUserStorageKey(targetUser);
+
+    fetch(CLOUD_BASE_URL + userKey, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(emptyState)
+    }).then(() => {
+      if (targetUser.toLowerCase() === (currentUsername || "").toLowerCase()) {
+        localStorage.removeItem("edanur_game_state");
+        userState = emptyState;
+      }
+      fetchAndDisplayUserData(targetUser);
+      alert(`${targetUser} verileri başarıyla sıfırlandı! ✨`);
+    });
   }
 });
+
+/* --- KULLANICI KARŞILAMA VE GİRİŞ KONTROLÜ --- */
+function checkUserGreeting() {
+  const welcomeModal = document.getElementById("welcomeModal");
+  const usernameInput = document.getElementById("usernameInput");
+  const saveUsernameBtn = document.getElementById("saveUsernameBtn");
+
+  if (!localStorage.getItem("eda_active_username")) {
+    if (welcomeModal) {
+      welcomeModal.classList.add("active");
+      saveUsernameBtn.addEventListener("click", () => {
+        let name = (usernameInput.value || "").trim();
+        if (!name) name = "Edanur";
+        localStorage.setItem("eda_active_username", name);
+        currentUsername = name;
+        welcomeModal.classList.remove("active");
+
+        // Sayfa başlığını da kişiselleştir
+        document.title = `${name}'un Dünyası ✨`;
+        const brandTitle = document.querySelector(".brand-title");
+        if (brandTitle) brandTitle.textContent = name;
+        const hubTitle = document.querySelector(".hub-welcome h2");
+        if (hubTitle) hubTitle.textContent = `Hoş Geldin ${name}! 💖`;
+
+        checkEntranceLog();
+        loadState();
+      });
+    }
+  } else {
+    currentUsername = localStorage.getItem("eda_active_username");
+    document.title = `${currentUsername}'un Dünyası ✨`;
+    const brandTitle = document.querySelector(".brand-title");
+    if (brandTitle) brandTitle.textContent = currentUsername;
+    const hubTitle = document.querySelector(".hub-welcome h2");
+    if (hubTitle) hubTitle.textContent = `Hoş Geldin ${currentUsername}! 💖`;
+    checkEntranceLog();
+  }
+}
 
 /* --- ARKA PLAN KALPLERİ --- */
 function createFloatingHearts() {
@@ -1753,5 +1955,5 @@ window.addEventListener("DOMContentLoaded", () => {
   loadState();
   renderQuestions();
   createFloatingHearts();
-  checkEntranceLog();
+  checkUserGreeting();
 });

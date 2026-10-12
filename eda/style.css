@@ -1153,3 +1153,82 @@ body {
   inset: 0;
   touch-action: none;
 }
+
+/* KULLANICI KARŞILAMA MODALI */
+.welcome-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.welcome-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.welcome-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px 24px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.welcome-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  animation: heartbeat 2s infinite ease-in-out;
+}
+
+.welcome-card h2 {
+  font-family: 'Pacifico', cursive;
+  color: var(--primary-pink);
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.welcome-card p {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.welcome-input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 2px solid #fed7e2;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  color: #d6336c;
+  outline: none;
+  background: #fff5f7;
+  transition: border-color 0.2s;
+  margin-bottom: 18px;
+}
+
+.welcome-input:focus {
+  border-color: #ff6b8b;
+  background: white;
+}
+
+.welcome-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+}
