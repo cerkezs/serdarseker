@@ -1961,66 +1961,58 @@ function createFloatingHearts() {
   }, 1400);
 }
 
-/* --- CANLI DÜELLO (1V1) MODU --- */
-const DUEL_ROOM_KEY = "eda_duel_room_state";
-let duelPollInterval = null;
-let duelGameTimer = null;
-let duelSpawnTimer = null;
-let duelSecondsLeft = 30;
-let myDuelScore = 0;
-let duelIsActive = false;
+/* --- 1V1 MEYDAN OKUMA & LİDERLİK MODU --- */
+const CHALLENGE_KEY = "eda_challenge_state";
+let challengeGameTimer = null;
+let challengeSpawnTimer = null;
+let challengeSecondsLeft = 30;
+let currentRunScore = 0;
+let challengeData = {
+  edanurScore: 0,
+  serdarScore: 0,
+  edanurName: "Edanur",
+  leaderName: null,
+  leaderScore: 0,
+  lastUpdated: null
+};
 
 const duelModal = document.getElementById("duelModal");
 const duelLobbyArea = document.getElementById("duelLobbyArea");
 const duelPlayArea = document.getElementById("duelPlayArea");
 const duelResultArea = document.getElementById("duelResultArea");
-const duelReadyBtn = document.getElementById("duelReadyBtn");
-const duelWaitText = document.getElementById("duelWaitText");
-const edanurStatusDot = document.getElementById("edanurStatusDot");
-const serdarStatusDot = document.getElementById("serdarStatusDot");
-const duelEdaScore = document.getElementById("duelEdaScore");
-const duelSerdarScore = document.getElementById("duelSerdarScore");
+const startChallengeBtn = document.getElementById("startChallengeBtn");
+const saveChallengeScoreBtn = document.getElementById("saveChallengeScoreBtn");
+const currentLeaderText = document.getElementById("currentLeaderText");
+const leaderSubtitle = document.getElementById("leaderSubtitle");
+const edanurRecordBadge = document.getElementById("edanurRecordBadge");
+const serdarRecordBadge = document.getElementById("serdarRecordBadge");
+const duelPlayer1Name = document.getElementById("duelPlayer1Name");
+const duelPlayer2Name = document.getElementById("duelPlayer2Name");
+const playingUserLabel = document.getElementById("playingUserLabel");
+const myLiveChallengeScore = document.getElementById("myLiveChallengeScore");
+const targetRecordScore = document.getElementById("targetRecordScore");
 const duelTimer = document.getElementById("duelTimer");
 const duelTapArena = document.getElementById("duelTapArena");
 const duelWinnerTitle = document.getElementById("duelWinnerTitle");
+const challengeScoreSummary = document.getElementById("challengeScoreSummary");
 const duelWinnerMsg = document.getElementById("duelWinnerMsg");
 const duelWinnerIcon = document.getElementById("duelWinnerIcon");
-
-const duelPlayer1Name = document.getElementById("duelPlayer1Name");
-const duelPlayer2Name = document.getElementById("duelPlayer2Name");
-const scorePlayer1Name = document.getElementById("scorePlayer1Name");
-const scorePlayer2Name = document.getElementById("scorePlayer2Name");
 
 function openDuelModal() {
   const dModal = document.getElementById("duelModal");
   if (dModal) {
     dModal.classList.add("active");
     resetDuelLobby();
-    updateDuelLobbyNames();
-    startDuelPolling();
+    loadChallengeState();
   }
 }
 window.openDuelModal = openDuelModal;
-
-function updateDuelLobbyNames() {
-  const myName = (currentUsername || "Edanur").trim();
-  const isMeSerdar = myName.toLowerCase().includes("serdar");
-
-  const player1 = isMeSerdar ? "Edanur" : myName;
-  const player2 = "Serdar";
-
-  if (duelPlayer1Name) duelPlayer1Name.textContent = player1;
-  if (duelPlayer2Name) duelPlayer2Name.textContent = player2;
-  if (scorePlayer1Name) scorePlayer1Name.textContent = `${player1} 💖`;
-  if (scorePlayer2Name) scorePlayer2Name.textContent = `${player2} 💙`;
-}
 
 function closeDuelModal() {
   const dModal = document.getElementById("duelModal");
   if (dModal) {
     dModal.classList.remove("active");
-    stopDuelPolling();
-    stopDuelGame();
+    stopChallengeGame();
   }
 }
 window.closeDuelModal = closeDuelModal;
@@ -2031,156 +2023,88 @@ if (cardDuelMode) {
 }
 
 function resetDuelLobby() {
-  duelIsActive = false;
+  stopChallengeGame();
   duelLobbyArea.classList.remove("hidden");
   duelPlayArea.classList.add("hidden");
   duelResultArea.classList.add("hidden");
-  duelWaitText.classList.add("hidden");
-  duelReadyBtn.disabled = false;
-  duelReadyBtn.textContent = "Hazırım! 🚀";
-  duelReadyBtn.style.opacity = "1";
+  loadChallengeState();
 }
 
-function getDuelRole() {
-  const name = (currentUsername || "Edanur").trim().toLowerCase();
-  if (name.includes("serdar")) return "serdar";
-  return "edanur"; // Serdar dışındaki herkes (Deneme, Edanur vb.) 1. oyuncudur
-}
+function loadChallengeState() {
+  const myName = (currentUsername || "Edanur").trim();
+  const isSerdar = myName.toLowerCase().includes("serdar");
 
-function startDuelPolling() {
-  stopDuelPolling();
-  pollDuelState();
-  duelPollInterval = setInterval(pollDuelState, 1200);
-}
-
-function stopDuelPolling() {
-  if (duelPollInterval) {
-    clearInterval(duelPollInterval);
-    duelPollInterval = null;
-  }
-}
-
-function pollDuelState() {
-  fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
+  fetch(CLOUD_BASE_URL + CHALLENGE_KEY)
     .then(res => res.json())
     .catch(() => null)
-    .then(room => {
-      if (!room || typeof room !== "object") return;
-
-      // Rakibin ismini buluttan alıp ekranda güncelle
-      if (room.p1Name && duelPlayer1Name) {
-        duelPlayer1Name.textContent = room.p1Name;
-        if (scorePlayer1Name) scorePlayer1Name.textContent = `${room.p1Name} 💖`;
+    .then(data => {
+      if (data && typeof data === "object") {
+        challengeData = data;
       }
 
-      // Durumları güncelle
-      if (edanurStatusDot) {
-        if (room.edanurReady) {
-          edanurStatusDot.textContent = "🟢 Hazır!";
-          edanurStatusDot.classList.add("ready");
-        } else {
-          edanurStatusDot.textContent = "⚪ Bekliyor";
-          edanurStatusDot.classList.remove("ready");
-        }
-      }
+      const p1 = challengeData.edanurName || (isSerdar ? "Edanur" : myName);
+      if (duelPlayer1Name) duelPlayer1Name.textContent = p1;
+      if (duelPlayer2Name) duelPlayer2Name.textContent = "Serdar";
 
-      if (serdarStatusDot) {
-        if (room.serdarReady) {
-          serdarStatusDot.textContent = "🟢 Hazır!";
-          serdarStatusDot.classList.add("ready");
-        } else {
-          serdarStatusDot.textContent = "⚪ Bekliyor";
-          serdarStatusDot.classList.remove("ready");
-        }
-      }
+      if (edanurRecordBadge) edanurRecordBadge.textContent = `${challengeData.edanurScore || 0} Puan`;
+      if (serdarRecordBadge) serdarRecordBadge.textContent = `${challengeData.serdarScore || 0} Puan`;
 
-      // Canlı skorları eşitle
-      if (duelEdaScore) duelEdaScore.textContent = room.edanurScore || 0;
-      if (duelSerdarScore) duelSerdarScore.textContent = room.serdarScore || 0;
-
-      // İkisi de hazırsa ve oyun henüz başlamadıysa başlat!
-      if (room.edanurReady && room.serdarReady && !duelIsActive) {
-        startLiveDuelMatch();
+      if (challengeData.leaderName) {
+        currentLeaderText.innerHTML = `👑 <b>${challengeData.leaderName}</b> (${challengeData.leaderScore} Puan)`;
+        leaderSubtitle.textContent = `Bu skoru geçebilir misin? Kaybeden kahveyi ısmarlar! ☕`;
+      } else {
+        currentLeaderText.textContent = "Henüz Skor Yapılmadı!";
+        leaderSubtitle.textContent = "İlk skoru sen yap ve meydan oku! 🚀";
       }
     });
 }
 
-if (duelReadyBtn) {
-  duelReadyBtn.addEventListener("click", () => {
-    const role = getDuelRole();
-    const myName = (currentUsername || (role === "serdar" ? "Serdar" : "Edanur")).trim();
-    duelReadyBtn.disabled = true;
-    duelReadyBtn.textContent = "Hazırsın! 👍";
-    duelReadyBtn.style.opacity = "0.7";
-    duelWaitText.classList.remove("hidden");
-
-    // Telegram Bildirimi: Rakibe meydan oku!
-    const rival = role === "serdar" ? "Edanur" : "Serdar";
-    sendTelegramLog(
-      `⚔️ <b>CANLI DÜELLO ÇAĞRISI!</b>\n` +
-      `🔥 <b>${myName}</b> düelloda hazır oldu ve <b>${rival}</b>'ı bekliyor!\n` +
-      `🏆 Kahvesine kapışma başlıyor, hemen siteye gir!`
-    );
-
-    // Buluta hazır bilgisini ve ismini yaz
-    fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
-      .then(res => res.json())
-      .catch(() => ({}))
-      .then(room => {
-        let updated = room && typeof room === "object" ? room : {};
-        if (role === "serdar") {
-          updated.serdarReady = true;
-          updated.serdarScore = 0;
-        } else {
-          updated.edanurReady = true;
-          updated.edanurScore = 0;
-          updated.p1Name = myName;
-        }
-        fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated)
-        });
-      });
+if (startChallengeBtn) {
+  startChallengeBtn.addEventListener("click", () => {
+    startChallengeMatch();
   });
 }
 
-function startLiveDuelMatch() {
-  duelIsActive = true;
-  myDuelScore = 0;
-  duelSecondsLeft = 30;
+function startChallengeMatch() {
+  currentRunScore = 0;
+  challengeSecondsLeft = 30;
+
+  const myName = (currentUsername || "Edanur").trim();
+  const isSerdar = myName.toLowerCase().includes("serdar");
+  const rivalScore = isSerdar ? (challengeData.edanurScore || 0) : (challengeData.serdarScore || 0);
 
   duelLobbyArea.classList.add("hidden");
   duelPlayArea.classList.remove("hidden");
   duelResultArea.classList.add("hidden");
 
+  if (playingUserLabel) playingUserLabel.textContent = `${myName} (Sen)`;
+  if (myLiveChallengeScore) myLiveChallengeScore.textContent = "0";
+  if (targetRecordScore) targetRecordScore.textContent = rivalScore;
   if (duelTimer) duelTimer.textContent = "30";
   if (duelTapArena) duelTapArena.innerHTML = "";
 
-  confetti({ particleCount: 40, spread: 60 });
+  confetti({ particleCount: 30, spread: 50 });
 
-  // 1. Sayaç
-  duelGameTimer = setInterval(() => {
-    duelSecondsLeft--;
-    if (duelTimer) duelTimer.textContent = duelSecondsLeft;
+  challengeGameTimer = setInterval(() => {
+    challengeSecondsLeft--;
+    if (duelTimer) duelTimer.textContent = challengeSecondsLeft;
 
-    if (duelSecondsLeft <= 0) {
-      endLiveDuelMatch();
+    if (challengeSecondsLeft <= 0) {
+      endChallengeMatch();
     }
   }, 1000);
 
-  // 2. Hedef Fırlatma
-  spawnDuelTarget();
-  duelSpawnTimer = setInterval(spawnDuelTarget, 650);
+  spawnChallengeTarget();
+  challengeSpawnTimer = setInterval(spawnChallengeTarget, 600);
 }
 
-function spawnDuelTarget() {
-  if (!duelIsActive || !duelTapArena) return;
+function spawnChallengeTarget() {
+  if (!duelTapArena) return;
 
   const target = document.createElement("div");
   target.className = "duel-target";
 
-  const icons = ["💖", "🍓", "⭐", "☕", "✨", "🔥", "🎀"];
+  const icons = ["💖", "☕", "🍓", "⭐", "✨", "🔥", "🎀"];
   target.textContent = icons[Math.floor(Math.random() * icons.length)];
 
   const arenaWidth = duelTapArena.clientWidth - 70;
@@ -2191,88 +2115,99 @@ function spawnDuelTarget() {
 
   target.addEventListener("pointerdown", (e) => {
     e.stopPropagation();
-    myDuelScore += 1;
+    currentRunScore += 1;
+    if (myLiveChallengeScore) myLiveChallengeScore.textContent = currentRunScore;
     target.remove();
-
-    // Kendi rolüne göre skoru buluta pushla
-    const role = getDuelRole();
-    if (role === "serdar") {
-      if (duelSerdarScore) duelSerdarScore.textContent = myDuelScore;
-    } else {
-      if (duelEdaScore) duelEdaScore.textContent = myDuelScore;
-    }
-
-    pushMyDuelScore(role, myDuelScore);
   });
 
   duelTapArena.appendChild(target);
 
-  // 1.4 saniye sonra kendiliğinden kaybolsun
   setTimeout(() => {
     if (target.parentNode) target.remove();
-  }, 1400);
+  }, 1300);
 }
 
-function pushMyDuelScore(role, score) {
-  fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
-    .then(res => res.json())
-    .catch(() => ({}))
-    .then(room => {
-      let updated = room && typeof room === "object" ? room : {};
-      if (role === "serdar") {
-        updated.serdarScore = score;
-      } else {
-        updated.edanurScore = score;
-      }
-      fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated)
-      });
+function endChallengeMatch() {
+  stopChallengeGame();
+
+  duelPlayArea.classList.add("hidden");
+  duelResultArea.classList.remove("hidden");
+
+  const myName = (currentUsername || "Edanur").trim();
+  const isSerdar = myName.toLowerCase().includes("serdar");
+  const rivalName = isSerdar ? (challengeData.edanurName || "Edanur") : "Serdar";
+  const rivalScore = isSerdar ? (challengeData.edanurScore || 0) : (challengeData.serdarScore || 0);
+
+  challengeScoreSummary.textContent = `${currentRunScore} Puan Topladın! ⭐`;
+
+  if (currentRunScore > rivalScore) {
+    duelWinnerTitle.textContent = "🎉 YENİ LİDER SENSİN!";
+    duelWinnerIcon.textContent = "👑";
+    duelWinnerMsg.textContent = `${rivalName}'ın ${rivalScore} puanlık skorunu geçtin!\nKahveler ${rivalName}'dan! ☕🔥`;
+    confetti({ particleCount: 70, spread: 80 });
+  } else if (currentRunScore === rivalScore) {
+    duelWinnerTitle.textContent = "🤝 SKORLAR EŞİTLENDİ!";
+    duelWinnerIcon.textContent = "✨";
+    duelWinnerMsg.textContent = `İkiniz de ${currentRunScore} puandasınız! Kahveler ortak! ☕`;
+  } else {
+    duelWinnerTitle.textContent = "💪 GÜZEL DENEME!";
+    duelWinnerIcon.textContent = "☕";
+    duelWinnerMsg.textContent = `${rivalName} şu an ${rivalScore} puanla önde!\nSkorunu kaydet veya tekrar deneyip rekoru kır!`;
+  }
+}
+
+if (saveChallengeScoreBtn) {
+  saveChallengeScoreBtn.addEventListener("click", () => {
+    const myName = (currentUsername || "Edanur").trim();
+    const isSerdar = myName.toLowerCase().includes("serdar");
+    const rivalName = isSerdar ? (challengeData.edanurName || "Edanur") : "Serdar";
+
+    saveChallengeScoreBtn.disabled = true;
+    saveChallengeScoreBtn.textContent = "Kaydedildi & Gönderildi! ✨";
+
+    // 1. Durumu güncelle
+    if (isSerdar) {
+      challengeData.serdarScore = Math.max(challengeData.serdarScore || 0, currentRunScore);
+    } else {
+      challengeData.edanurScore = Math.max(challengeData.edanurScore || 0, currentRunScore);
+      challengeData.edanurName = myName;
+    }
+
+    if (challengeData.serdarScore >= challengeData.edanurScore) {
+      challengeData.leaderName = "Serdar";
+      challengeData.leaderScore = challengeData.serdarScore;
+    } else {
+      challengeData.leaderName = challengeData.edanurName;
+      challengeData.leaderScore = challengeData.edanurScore;
+    }
+    challengeData.lastUpdated = new Date().toLocaleString("tr-TR");
+
+    // 2. Buluta kaydet
+    fetch(CLOUD_BASE_URL + CHALLENGE_KEY, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(challengeData)
     });
+
+    // 3. Telegram'a meydan okuma bildirimi at!
+    sendTelegramLog(
+      `⚔️ <b>1v1 KAHVE DÜELLOSU MEYDAN OKUMASI!</b> 🔥\n\n` +
+      `👤 <b>${myName}</b> 30 saniyede <b>${currentRunScore} Puan</b> topladı!\n` +
+      `👑 <b>Güncel Lider:</b> ${challengeData.leaderName} (${challengeData.leaderScore} Puan)\n\n` +
+      `📢 <i>${rivalName}, bu skoru geçebilecek misin? Kahveler kaybedenden! ☕</i>`
+    );
+
+    setTimeout(() => {
+      resetDuelLobby();
+      saveChallengeScoreBtn.disabled = false;
+      saveChallengeScoreBtn.textContent = "Skorumu Kaydet & Meydan Oku! 📢";
+    }, 1500);
+  });
 }
 
-function endLiveDuelMatch() {
-  stopDuelGame();
-
-  fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
-    .then(res => res.json())
-    .catch(() => ({}))
-    .then(room => {
-      const edaFinal = (room && room.edanurScore) || 0;
-      const serdarFinal = (room && room.serdarScore) || 0;
-
-      duelPlayArea.classList.add("hidden");
-      duelResultArea.classList.remove("hidden");
-
-      if (edaFinal > serdarFinal) {
-        duelWinnerTitle.textContent = "🏆 Kazanan: Edanur! (💖)";
-        duelWinnerMsg.textContent = `Edanur: ${edaFinal} - Serdar: ${serdarFinal}\nHarika bir zafer! Serdar kahveleri ısmarlıyor! ☕🎉`;
-        duelWinnerIcon.textContent = "👑";
-      } else if (serdarFinal > edaFinal) {
-        duelWinnerTitle.textContent = "🏆 Kazanan: Serdar! (💙)";
-        duelWinnerMsg.textContent = `Serdar: ${serdarFinal} - Edanur: ${edaFinal}\nSerdar kazandı! Edanur borçlusun! ☕🎉`;
-        duelWinnerIcon.textContent = "🥇";
-      } else {
-        duelWinnerTitle.textContent = "🤝 Dostluk Kazandı (Berabere!)";
-        duelWinnerMsg.textContent = `İkiniz de ${edaFinal} puan topladınız! Kahveler ortak! ☕💕`;
-        duelWinnerIcon.textContent = "✨";
-      }
-
-      confetti({ particleCount: 70, spread: 80 });
-
-      // Oda durumunu sıfırla
-      fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ edanurReady: false, serdarReady: false, edanurScore: 0, serdarScore: 0 })
-      });
-    });
-}
-
-function stopDuelGame() {
-  if (duelGameTimer) { clearInterval(duelGameTimer); duelGameTimer = null; }
-  if (duelSpawnTimer) { clearInterval(duelSpawnTimer); duelSpawnTimer = null; }
+function stopChallengeGame() {
+  if (challengeGameTimer) { clearInterval(challengeGameTimer); challengeGameTimer = null; }
+  if (challengeSpawnTimer) { clearInterval(challengeSpawnTimer); challengeSpawnTimer = null; }
   if (duelTapArena) duelTapArena.innerHTML = "";
 }
 

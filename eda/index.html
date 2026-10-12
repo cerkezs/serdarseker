@@ -156,9 +156,9 @@
         <div class="game-select-card duel-mode-card" id="cardDuelMode" onclick="openDuelModal()">
           <div class="game-card-icon">⚔️</div>
           <div class="game-card-info">
-            <h3>Canlı Düello (1v1)</h3>
-            <p>Edanur vs Serdar! Canlı kapış, kazanan kahveyi kapar!</p>
-            <span class="reward-pill" style="background:#fefcbf; color:#b7791f; font-weight:800;">🔥 Canlı Yarış</span>
+            <h3>1v1 Meydan Okuma! 🔥</h3>
+            <p>Edanur vs Serdar! Skorunu yap, kahvesine meydan oku!</p>
+            <span class="reward-pill" style="background:#fefcbf; color:#b7791f; font-weight:800;">🏆 Kahve Düellosu</span>
           </div>
         </div>
 
@@ -245,65 +245,74 @@
     </div>
   </div>
 
-  <!-- CANLI DÜELLO (1V1) MODALI -->
+  <!-- 1V1 MEYDAN OKUMA MODALI -->
   <div class="duel-modal" id="duelModal">
     <div class="duel-card">
       <div class="duel-header">
-        <h3>⚔️ Canlı Düello (1v1)</h3>
+        <h3>⚔️ 1v1 Kahve Düellosu</h3>
         <button class="modal-back-btn" id="duelCloseBtn" onclick="closeDuelModal()">✕</button>
       </div>
 
-      <!-- 1. Aşama: Lobi / Hazırlık -->
+      <!-- 1. Aşama: Lobi / Liderlik Tablosu -->
       <div id="duelLobbyArea">
         <div class="duel-vs-banner">
           <div class="duel-player-badge">
             <span class="duel-avatar">💖</span>
             <span class="duel-name" id="duelPlayer1Name">Edanur</span>
-            <span class="duel-status-dot" id="edanurStatusDot">⚪ Bekliyor</span>
+            <span class="duel-status-dot" id="edanurRecordBadge">0 Puan</span>
           </div>
           <div class="duel-vs-text">VS</div>
           <div class="duel-player-badge">
             <span class="duel-avatar">💙</span>
             <span class="duel-name" id="duelPlayer2Name">Serdar</span>
-            <span class="duel-status-dot" id="serdarStatusDot">⚪ Bekliyor</span>
+            <span class="duel-status-dot" id="serdarRecordBadge">0 Puan</span>
           </div>
         </div>
 
-        <p class="duel-info-desc">30 saniye boyunca ekranda beliren sürpriz hedeflere hızla dokun! En çok puanı toplayan kahveyi kapar! ☕🔥</p>
+        <div style="background:#fffaf0; border:1px solid #feebc8; border-radius:14px; padding:12px; margin:14px; text-align:center;">
+          <div style="font-size:0.85rem; color:#c05621; font-weight:700;">👑 GÜNCEL LİDER</div>
+          <div id="currentLeaderText" style="font-size:1.15rem; font-weight:800; color:#7b341e; margin-top:4px;">Henüz Skor Yapılmadı!</div>
+          <div id="leaderSubtitle" style="font-size:0.8rem; color:#a0aec0; margin-top:2px;">Kaybeden kahveyi ısmarlar! ☕</div>
+        </div>
+
+        <p class="duel-info-desc">30 saniye boyunca ekranda hızla beliren kalpleri ve kahveleri yakala! Skorunu kaydet, Telegram'dan rakibine meydan oku! 🔥</p>
 
         <div class="duel-ready-action">
-          <button class="primary-btn" id="duelReadyBtn">Hazırım! 🚀</button>
-          <div id="duelWaitText" class="duel-wait-msg hidden">Rakibin hazır olması bekleniyor... ⏳</div>
+          <button class="primary-btn" id="startChallengeBtn" style="font-size:1.1rem; padding:14px 28px;">Düelloyu Başlat! 🚀</button>
         </div>
       </div>
 
-      <!-- 2. Aşama: Canlı Maç Alanı -->
+      <!-- 2. Aşama: 30 Saniye Oyun Alanı -->
       <div id="duelPlayArea" class="hidden">
         <div class="duel-scoreboard">
-          <div class="duel-score-box edanur-score">
-            <span id="scorePlayer1Name">Edanur 💖</span>
-            <strong id="duelEdaScore">0</strong>
+          <div class="duel-score-box">
+            <span id="playingUserLabel">Senin Skorun</span>
+            <strong id="myLiveChallengeScore" style="color:#d6336c;">0</strong>
           </div>
           <div class="duel-timer-box">
             <span id="duelTimer">30</span><small>sn</small>
           </div>
-          <div class="duel-score-box serdar-score">
-            <span id="scorePlayer2Name">Serdar 💙</span>
-            <strong id="duelSerdarScore">0</strong>
+          <div class="duel-score-box">
+            <span>Hedef Rekor</span>
+            <strong id="targetRecordScore" style="color:#3182ce;">0</strong>
           </div>
         </div>
 
         <div class="duel-tap-arena" id="duelTapArena">
-          <!-- Dinamik hedefler buraya düşecek -->
+          <!-- Dinamik hedefler -->
         </div>
       </div>
 
-      <!-- 3. Aşama: Sonuç Ekranı -->
+      <!-- 3. Aşama: Sonuç & Meydan Okuma Ekranı -->
       <div id="duelResultArea" class="hidden">
         <div class="duel-winner-trophy" id="duelWinnerIcon">🏆</div>
-        <h2 id="duelWinnerTitle">Kazanan: Edanur!</h2>
-        <p id="duelWinnerMsg">Harika bir kapışmaydı! Kahveler kaybedenden! ☕🎉</p>
-        <button class="primary-btn" onclick="resetDuelLobby()">Tekrar Oyna 🔄</button>
+        <h2 id="duelWinnerTitle">30 Saniye Bitti!</h2>
+        <div id="challengeScoreSummary" style="font-size:1.4rem; font-weight:800; color:#d6336c; margin-bottom:8px;">24 Puan!</div>
+        <p id="duelWinnerMsg" style="white-space:pre-line;">Harika bir performans!</p>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
+          <button class="primary-btn" id="saveChallengeScoreBtn">Skorumu Kaydet & Meydan Oku! 📢</button>
+          <button class="modal-back-btn" onclick="resetDuelLobby()" style="padding:10px 16px;">Tekrar Dene 🔄</button>
+        </div>
       </div>
     </div>
   </div>
@@ -372,6 +381,6 @@
 
   <!-- Konfeti Kütüphanesi -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="app.js?v=5.0"></script>
+  <script src="app.js?v=6.0"></script>
 </body>
 </html>
