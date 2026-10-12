@@ -1798,15 +1798,22 @@ function renderAdminData() {
   localStorage.setItem("serdar_role", "serdar_admin"); // Serdar'ın kendi tarayıcısı admin olarak işaretlendi
   userRole = "serdar_admin";
 
+  const defaultUsers = ["Edanur", "Serdar"];
+  if (currentUsername && !defaultUsers.includes(currentUsername)) {
+    defaultUsers.push(currentUsername);
+  }
+
   // Tüm kayıtlı kullanıcıları buluttan çek ve select listesine doldur
   fetch(CLOUD_BASE_URL + USERS_LIST_KEY)
     .then(res => res.json())
-    .catch(() => ["Edanur"])
+    .catch(() => defaultUsers)
     .then(usersList => {
-      let list = Array.isArray(usersList) && usersList.length > 0 ? usersList : ["Edanur"];
-      if (!list.includes("Edanur")) list.unshift("Edanur");
+      let list = Array.isArray(usersList) && usersList.length > 0 ? usersList : defaultUsers;
+      defaultUsers.forEach(u => {
+        if (!list.includes(u)) list.push(u);
+      });
 
-      const currentSelected = adminUserSelect.value || "Edanur";
+      const currentSelected = adminUserSelect.value || (currentUsername === "Serdar" ? "Serdar" : "Edanur");
       adminUserSelect.innerHTML = "";
       list.forEach(u => {
         const opt = document.createElement("option");
@@ -1886,12 +1893,16 @@ adminResetBtn.addEventListener("click", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(emptyState)
     }).then(() => {
-      if (targetUser.toLowerCase() === (currentUsername || "").toLowerCase()) {
+      // Eğer sıfırlanan kullanıcı şu an açık olan kullanıcıysa yerel ekranı da hemen sıfırla
+      if (!currentUsername || targetUser.toLowerCase() === currentUsername.toLowerCase()) {
         localStorage.removeItem("edanur_game_state");
-        userState = emptyState;
+        userState = { ...emptyState };
+        updatePointsDisplay();
+        renderQuestions();
+        renderAskedQuestions();
       }
       fetchAndDisplayUserData(targetUser);
-      alert(`${targetUser} verileri başarıyla sıfırlandı! ✨`);
+      alert(`${targetUser} kullanıcısının tüm puanları ve cevapları başarıyla sıfırlandı! ✨`);
     });
   }
 });
@@ -1948,6 +1959,286 @@ function createFloatingHearts() {
     container.appendChild(h);
     setTimeout(() => h.remove(), 10000);
   }, 1400);
+}
+
+/* --- CANLI DÜELLO (1V1) MODU --- */
+const DUEL_ROOM_KEY = "eda_duel_room_state";
+let duelPollInterval = null;
+let duelGameTimer = null;
+let duelSpawnTimer = null;
+let duelSecondsLeft = 30;
+let myDuelScore = 0;
+let duelIsActive = false;
+
+const duelModal = document.getElementById("duelModal");
+const duelLobbyArea = document.getElementById("duelLobbyArea");
+const duelPlayArea = document.getElementById("duelPlayArea");
+const duelResultArea = document.getElementById("duelResultArea");
+const duelReadyBtn = document.getElementById("duelReadyBtn");
+const duelWaitText = document.getElementById("duelWaitText");
+const edanurStatusDot = document.getElementById("edanurStatusDot");
+const serdarStatusDot = document.getElementById("serdarStatusDot");
+const duelEdaScore = document.getElementById("duelEdaScore");
+const duelSerdarScore = document.getElementById("duelSerdarScore");
+const duelTimer = document.getElementById("duelTimer");
+const duelTapArena = document.getElementById("duelTapArena");
+const duelWinnerTitle = document.getElementById("duelWinnerTitle");
+const duelWinnerMsg = document.getElementById("duelWinnerMsg");
+const duelWinnerIcon = document.getElementById("duelWinnerIcon");
+
+function openDuelModal() {
+  if (duelModal) {
+    duelModal.classList.add("active");
+    resetDuelLobby();
+    startDuelPolling();
+  }
+}
+
+function closeDuelModal() {
+  if (duelModal) {
+    duelModal.classList.remove("active");
+    stopDuelPolling();
+    stopDuelGame();
+  }
+}
+
+function resetDuelLobby() {
+  duelIsActive = false;
+  duelLobbyArea.classList.remove("hidden");
+  duelPlayArea.classList.add("hidden");
+  duelResultArea.classList.add("hidden");
+  duelWaitText.classList.add("hidden");
+  duelReadyBtn.disabled = false;
+  duelReadyBtn.textContent = "Hazırım! 🚀";
+  duelReadyBtn.style.opacity = "1";
+}
+
+function getDuelRole() {
+  const name = (currentUsername || "Edanur").trim().toLowerCase();
+  if (name.includes("serdar")) return "serdar";
+  return "edanur";
+}
+
+function startDuelPolling() {
+  stopDuelPolling();
+  pollDuelState();
+  duelPollInterval = setInterval(pollDuelState, 1500);
+}
+
+function stopDuelPolling() {
+  if (duelPollInterval) {
+    clearInterval(duelPollInterval);
+    duelPollInterval = null;
+  }
+}
+
+function pollDuelState() {
+  fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
+    .then(res => res.json())
+    .catch(() => null)
+    .then(room => {
+      if (!room || typeof room !== "object") return;
+
+      // Durumları güncelle
+      if (edanurStatusDot) {
+        if (room.edanurReady) {
+          edanurStatusDot.textContent = "🟢 Hazır!";
+          edanurStatusDot.classList.add("ready");
+        } else {
+          edanurStatusDot.textContent = "⚪ Bekliyor";
+          edanurStatusDot.classList.remove("ready");
+        }
+      }
+
+      if (serdarStatusDot) {
+        if (room.serdarReady) {
+          serdarStatusDot.textContent = "🟢 Hazır!";
+          serdarStatusDot.classList.add("ready");
+        } else {
+          serdarStatusDot.textContent = "⚪ Bekliyor";
+          serdarStatusDot.classList.remove("ready");
+        }
+      }
+
+      // Canlı skorları eşitle
+      if (duelEdaScore) duelEdaScore.textContent = room.edanurScore || 0;
+      if (duelSerdarScore) duelSerdarScore.textContent = room.serdarScore || 0;
+
+      // İkisi de hazırsa ve oyun henüz başlamadıysa başlat!
+      if (room.edanurReady && room.serdarReady && !duelIsActive) {
+        startLiveDuelMatch();
+      }
+    });
+}
+
+if (duelReadyBtn) {
+  duelReadyBtn.addEventListener("click", () => {
+    const role = getDuelRole();
+    duelReadyBtn.disabled = true;
+    duelReadyBtn.textContent = "Hazırsın! 👍";
+    duelReadyBtn.style.opacity = "0.7";
+    duelWaitText.classList.remove("hidden");
+
+    // Telegram Bildirimi: Rakibe meydan oku!
+    const sender = role === "serdar" ? "Serdar" : "Edanur";
+    const rival = role === "serdar" ? "Edanur" : "Serdar";
+    sendTelegramLog(
+      `⚔️ <b>CANLI DÜELLO ÇAĞRISI!</b>\n` +
+      `🔥 <b>${sender}</b> düelloda hazır oldu ve <b>${rival}</b>'ı bekliyor!\n` +
+      `🏆 Kahvesine kapışma başlıyor, hemen siteye gir!`
+    );
+
+    // Buluta hazır bilgisini yaz
+    fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
+      .then(res => res.json())
+      .catch(() => ({}))
+      .then(room => {
+        let updated = room && typeof room === "object" ? room : {};
+        if (role === "serdar") {
+          updated.serdarReady = true;
+          updated.serdarScore = 0;
+        } else {
+          updated.edanurReady = true;
+          updated.edanurScore = 0;
+        }
+        fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
+        });
+      });
+  });
+}
+
+function startLiveDuelMatch() {
+  duelIsActive = true;
+  myDuelScore = 0;
+  duelSecondsLeft = 30;
+
+  duelLobbyArea.classList.add("hidden");
+  duelPlayArea.classList.remove("hidden");
+  duelResultArea.classList.add("hidden");
+
+  if (duelTimer) duelTimer.textContent = "30";
+  if (duelTapArena) duelTapArena.innerHTML = "";
+
+  confetti({ particleCount: 40, spread: 60 });
+
+  // 1. Sayaç
+  duelGameTimer = setInterval(() => {
+    duelSecondsLeft--;
+    if (duelTimer) duelTimer.textContent = duelSecondsLeft;
+
+    if (duelSecondsLeft <= 0) {
+      endLiveDuelMatch();
+    }
+  }, 1000);
+
+  // 2. Hedef Fırlatma
+  spawnDuelTarget();
+  duelSpawnTimer = setInterval(spawnDuelTarget, 650);
+}
+
+function spawnDuelTarget() {
+  if (!duelIsActive || !duelTapArena) return;
+
+  const target = document.createElement("div");
+  target.className = "duel-target";
+
+  const icons = ["💖", "🍓", "⭐", "☕", "✨", "🔥", "🎀"];
+  target.textContent = icons[Math.floor(Math.random() * icons.length)];
+
+  const arenaWidth = duelTapArena.clientWidth - 70;
+  const arenaHeight = duelTapArena.clientHeight - 70;
+
+  target.style.left = Math.max(10, Math.floor(Math.random() * arenaWidth)) + "px";
+  target.style.top = Math.max(10, Math.floor(Math.random() * arenaHeight)) + "px";
+
+  target.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+    myDuelScore += 1;
+    target.remove();
+
+    // Kendi rolüne göre skoru buluta pushla
+    const role = getDuelRole();
+    if (role === "serdar") {
+      if (duelSerdarScore) duelSerdarScore.textContent = myDuelScore;
+    } else {
+      if (duelEdaScore) duelEdaScore.textContent = myDuelScore;
+    }
+
+    pushMyDuelScore(role, myDuelScore);
+  });
+
+  duelTapArena.appendChild(target);
+
+  // 1.4 saniye sonra kendiliğinden kaybolsun
+  setTimeout(() => {
+    if (target.parentNode) target.remove();
+  }, 1400);
+}
+
+function pushMyDuelScore(role, score) {
+  fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
+    .then(res => res.json())
+    .catch(() => ({}))
+    .then(room => {
+      let updated = room && typeof room === "object" ? room : {};
+      if (role === "serdar") {
+        updated.serdarScore = score;
+      } else {
+        updated.edanurScore = score;
+      }
+      fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+    });
+}
+
+function endLiveDuelMatch() {
+  stopDuelGame();
+
+  fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY)
+    .then(res => res.json())
+    .catch(() => ({}))
+    .then(room => {
+      const edaFinal = (room && room.edanurScore) || 0;
+      const serdarFinal = (room && room.serdarScore) || 0;
+
+      duelPlayArea.classList.add("hidden");
+      duelResultArea.classList.remove("hidden");
+
+      if (edaFinal > serdarFinal) {
+        duelWinnerTitle.textContent = "🏆 Kazanan: Edanur! (💖)";
+        duelWinnerMsg.textContent = `Edanur: ${edaFinal} - Serdar: ${serdarFinal}\nHarika bir zafer! Serdar kahveleri ısmarlıyor! ☕🎉`;
+        duelWinnerIcon.textContent = "👑";
+      } else if (serdarFinal > edaFinal) {
+        duelWinnerTitle.textContent = "🏆 Kazanan: Serdar! (💙)";
+        duelWinnerMsg.textContent = `Serdar: ${serdarFinal} - Edanur: ${edaFinal}\nSerdar kazandı! Edanur borçlusun! ☕🎉`;
+        duelWinnerIcon.textContent = "🥇";
+      } else {
+        duelWinnerTitle.textContent = "🤝 Dostluk Kazandı (Berabere!)";
+        duelWinnerMsg.textContent = `İkiniz de ${edaFinal} puan topladınız! Kahveler ortak! ☕💕`;
+        duelWinnerIcon.textContent = "✨";
+      }
+
+      confetti({ particleCount: 70, spread: 80 });
+
+      // Oda durumunu sıfırla
+      fetch(CLOUD_BASE_URL + DUEL_ROOM_KEY, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ edanurReady: false, serdarReady: false, edanurScore: 0, serdarScore: 0 })
+      });
+    });
+}
+
+function stopDuelGame() {
+  if (duelGameTimer) { clearInterval(duelGameTimer); duelGameTimer = null; }
+  if (duelSpawnTimer) { clearInterval(duelSpawnTimer); duelSpawnTimer = null; }
+  if (duelTapArena) duelTapArena.innerHTML = "";
 }
 
 /* --- BAŞLATMA --- */
