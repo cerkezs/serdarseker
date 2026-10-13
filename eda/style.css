@@ -1463,7 +1463,7 @@ body {
   background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 10001 !important; /* En üstte durması için */
+  z-index: 10005 !important; /* En üstte durması için */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1474,8 +1474,8 @@ body {
 }
 
 .kustuk-modal.active {
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .kustuk-card {
